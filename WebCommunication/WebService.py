@@ -25,7 +25,7 @@ def upload_flight():
     parameters['location'] = request.form['locationTags']
     response = FlightsManager.upload_flight(file, parameters)
     if response:
-        return jsonify(msg='file uploaded successfully.', data=True)
+        return jsonify(msg=response['msg'], data=response['data'])
     return jsonify(msg='Error - file upload Failure.', data=False)
 
 

@@ -1,4 +1,4 @@
-from Domain.models.Model import Model
+from SlurmCommunication.SlurmFunctions.models.Model import Model
 import tensorflow as tf
 """
     A class that inherits from a Model class

@@ -1,5 +1,6 @@
-from statsmodels.regression.tests.test_rolling import tf
+import tensorflow as tf
 from SlurmCommunication.SlurmFunctions.models.Model import Model
+# import Model
 
 """
     A class that inherits from a Model class

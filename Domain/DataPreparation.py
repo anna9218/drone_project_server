@@ -5,6 +5,8 @@ import shutil
 from functools import reduce
 import tensorflow as tf
 import numpy as np
+import sys
+sys.path.append(os.getcwd().split('\Domain')[0])
 from DBCommunication.DBAccess import DBAccess, SpecificValuesType
 
 print("TensorFlow version: {}".format(tf.__version__)) # TensorFlow version: 2.3.0

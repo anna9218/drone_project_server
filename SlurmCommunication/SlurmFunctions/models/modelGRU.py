@@ -1,4 +1,5 @@
-from statsmodels.regression.tests.test_rolling import tf
+import tensorflow as tf
+# import Model
 from SlurmCommunication.SlurmFunctions.models.Model import Model
 
 """

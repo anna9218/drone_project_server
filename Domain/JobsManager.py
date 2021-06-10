@@ -88,17 +88,24 @@ class JobsManager:
         # batch_file = SlurmManager.create_sbatch_file(user_email, self.EXEC_FILE_PATH, param_list)
         # job_id = SlurmManager.run_job(user_email, batch_file)
         self.EXEC_FILE_PATH = 'SlurmFunctions/./slurmExecutableFile.py'
-        job_id = SlurmManager.run_job_on_gpu(user_email, self.EXEC_FILE_PATH, param_list)
+        job_id = SlurmManager.run_job_on_gpu(user_email, self.EXEC_FILE_PATH, ['1000000000'])
+        # job_id = SlurmManager.run_job_on_gpu(user_email, self.EXEC_FILE_PATH, param_list)
         print("job ID is: " + str(job_id))
-
+        if job_id == -1:
+            return {'msg': 'Error with Slurm server connection.\nCouldn\'t submit job.', 'data': False}
         # save job to db
-        model_details['model_type'] = model_type
-        model_details['target_variable'] = target_variable
-        model_details['target_values'] = target_values
-        self.db_access.insert_job({'user_email': user_email,
-                                   'job_name_by_user': job_name_by_user,
-                                   'slurm_job_id': job_id,
-                                   'model_details': model_details})
+        try:
+            model_details['model_type'] = model_type
+            model_details['target_variable'] = target_variable
+            model_details['target_values'] = target_values
+            self.db_access.insert_job({'user_email': user_email,
+                                       'job_name_by_user': job_name_by_user,
+                                       'slurm_job_id': job_id,
+                                       'model_details': model_details})
+        except:
+            return {'msg': 'Error with saving job in DB.\nCouldn\'t submit job.', 'data': False}
+
+        return {'msg': 'Job ' + job_name_by_user + 'submitted successfully', 'data': True}
         # self.db_access.update_job({'job_name_by_user': job_name_by_user}, {'slurm_job_id': job_id})
 
         # X_train, y_train, X_test, y_test = self.data_preparation.split_to_train_test_from_csv(path)
@@ -132,6 +139,7 @@ class JobsManager:
         #                                        _output_size, iterations,
         #                                        batch_size, epochs, "LSTM", neurons_in_layer,
         #                                        verbose=0)
+
 
     def cancel_job(self, user_email, slurm_job_id):
         # TODO: to test

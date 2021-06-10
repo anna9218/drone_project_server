@@ -54,7 +54,9 @@ def upload_flight(file, flight_details=None):
             flight_details['data'] = convert_flight_data_to_uniformed_format(flight_data)
             gps_list = list(filter(lambda line: line != '', flight_details['data'].split('\n')))
             if len(gps_list) < 2:
-                return {'msg': "Error, log file has to contain at least one GPS point (= x,y,z or Lat,Lng,Alt)",
+                os.remove(file_name)
+                return {'msg': "Error, log file has to contain at least one GPS point (= x,y,z or Lat,Lng,Alt).\n"
+                               "Please choose a different log file.",
                         'data': False}
             DBAccess.getInstance().insert_flight(flight_details)
             # DBAccess.getInstance().close_conn()

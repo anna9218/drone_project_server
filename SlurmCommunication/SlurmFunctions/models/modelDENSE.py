@@ -1,5 +1,5 @@
 from statsmodels.regression.tests.test_rolling import tf
-from Domain.models.Model import Model
+from SlurmCommunication.SlurmFunctions.models.Model import Model
 
 """
     A class that inherits from a Model class

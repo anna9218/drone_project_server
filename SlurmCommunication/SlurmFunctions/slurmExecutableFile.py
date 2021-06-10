@@ -5,14 +5,11 @@ import sys
 
 from jinja2.utils import import_string
 from jsonpickle import json
-# from DBCommunication.DBAccess import DBAccess
-# from Domain.DataPreparation import DataPreparation
-
 # FILES_DIR = "SlurmFunctions.models."
 from DBCommunication.DBAccess import DBAccess
 from Domain.DataPreparation import DataPreparation
 
-FILES_DIR = "Domain.models."
+FILES_DIR = "models."
 
 
 def create_and_run_model(user_email: str, job_name_by_user: str, model_type: str,

@@ -1,11 +1,10 @@
-import os
 from random import random
 from jinja2.utils import import_string
 from jsonpickle import json
 
 # OUR import
 from DBCommunication.DBAccess import DBAccess, MinType, MaxType, RangeType, SpecificValuesType
-from Domain import slurmExecutableFile
+from SlurmCommunication.SlurmFunctions import slurmExecutableFile
 from Domain.DataPreparation import DataPreparation
 from SlurmCommunication import SlurmManager
 
@@ -14,11 +13,13 @@ class JobsManager:
     data_preparation = DataPreparation()
     db_access = DBAccess.getInstance()
     model = None
-    EXEC_FILE_PATH = "../Domain/slurmExecutableFile.py"
+    EXEC_FILE_PATH = "../SlurmCommunication/SlurmFunctions/slurmExecutableFile.py"
+    MODELS_DIR_PATH = "SlurmCommunication.SlurmFunctions.models."
+
 
     def get_model_parameters(self, model_type: str):
         try:
-            model = getattr(import_string("Domain.models." + model_type), model_type)()
+            model = getattr(import_string(self.MODELS_DIR_PATH + model_type), model_type)()
             params = model.get_parameters()
             return {'msg': "Success", 'data': params}
         except:
@@ -213,8 +214,9 @@ class JobsManager:
 
 
 if __name__ == '__main__':
+
     # SchedulerManager().run_job("modelLSTM", None, None, None, None)
-    print(JobsManager().get_all_parameters())
+    print(JobsManager().get_model_parameters("modelLSTM"))
 
     # print(JobsManager().get_models_types())
     # logs_queries = {'age': ['RangeType', 80, 91], 'weather': ['AllValuesType']}

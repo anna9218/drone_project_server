@@ -178,9 +178,24 @@ def exe_cmd_on_gpu_server(cmd, fout=stdout):
                             'StrictHostKeyChecking=no; ' + cmd + '; exit'], stdout=fout)
 
 
+# from subprocess import Popen, PIPE
+# import subprocess
+def copy_directory_to_gpu_server(path_to_dir):
+    # cmd = "scp -rp shao@132.72.67.188:" + path_to_dir + " shao@gpu.bgu.ac.il:/home/shao/"
+    # subprocess.call(["sshpass", "-p", gpu_pass, "ssh", "-t", gpu_addr,
+    #                  'StrictHostKeyChecking=no; ' + cmd + '; exit'])
+    # # subprocess.call(["scp", "-rp", gpu_pass, "ssh", "-t", gpu_addr, 'StrictHostKeyChecking=no; '+cmd+';exit'])
+    source_host = "shao@132.72.67.188"
+    dest_host = gpu_addr
+    exe_cmd_on_gpu_server("scp -rp shao@132.72.67.188:" + path_to_dir + " shao@gpu.bgu.ac.il:/home/shao/")
+
+
 from subprocess import Popen, PIPE
+
 # import subprocess
 if __name__ == "__main__":
+    copy_directory_to_gpu_server("/home/shao/testSlurm/DirToCopy")
+
     # subprocess.call(["scp", "shao@132.72.67.188:fileToSend.txt", "checkingSSH/"])
 
     # run_job_on_gpu('shao@bgu.ac.il', 'SlurmFunctions/./main.py', ['6000'])

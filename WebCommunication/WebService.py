@@ -1,12 +1,13 @@
 import json
 from flask import Flask, jsonify, request
-# from flask_cors import CORS
+# TODO: for downloading flask_cors run this line in terminal: conda install -c anaconda flask_cors
+from flask_cors import CORS
 
 from Domain.JobsManager import JobsManager
 from Domain import FlightsManager
 
 app = Flask(__name__)
-# CORS(app)
+CORS(app)
 
 
 @app.route('/upload_flight', methods=['POST'])

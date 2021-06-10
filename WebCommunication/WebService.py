@@ -51,6 +51,14 @@ def fetch_model_parameters():
         return jsonify(msg=response['msg'], data=response['data'])
     return jsonify(msg=response['msg'], data=response['data'])
 
+@app.route('/fetch_flight_param_values', methods=['POST'])
+def fetch_flight_param_values():
+    parameter: str = request.form['parameter']
+    try:
+        data = JobsManager().fetch_flight_param_values(parameter)
+        return jsonify(msg='Parameter\'s values retrieved successfully', data=data)
+    except:
+        return jsonify(msg='Error with the server', data=[])
 
 @app.route('/run_new_job', methods=['POST'])
 def run_new_job():
@@ -100,22 +108,12 @@ def fetch_researcher_jobs():
         return jsonify(msg='Error with the server', data=[])
 
 
-@app.route('/fetch_flight_param_values', methods=['POST'])
-def fetch_flight_param_values():
-    parameter: str = request.form['parameter']
-    try:
-        data = JobsManager().fetch_flight_param_values(parameter)
-        return jsonify(msg='Parameter\'s values retrieved successfully', data=data)
-    except:
-        return jsonify(msg='Error with the server', data=[])
-
-
 if __name__ == '__main__':
-    # ip = "132.72.67.188"
-    ip = "127.0.0.1"
+    ip = "132.72.67.188"
+    # ip = "127.0.0.1"
     port = 8020
-    app.run(host=ip, port=port, debug=True)
-    # app.run(host=ip, port=port)
+    # app.run(host=ip, port=port, debug=True)
+    app.run(host=ip, port=port)
 
     # job_name_by_user: str = 'our first job'
     # user_email: str = 'shaio@blaaa'

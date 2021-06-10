@@ -11,14 +11,13 @@ from SlurmCommunication.SlurmFunctions import slurmExecutableFile
 from Domain.DataPreparation import DataPreparation
 from SlurmCommunication import SlurmManager
 
-
 class JobsManager:
     data_preparation = DataPreparation()
     db_access = DBAccess.getInstance()
     model = None
+    # EXEC_FILE_PATH = 'SlurmFunctions/./slurmExecutableFile.py'
     EXEC_FILE_PATH = "../SlurmCommunication/SlurmFunctions/slurmExecutableFile.py"
     MODELS_DIR_PATH = "SlurmCommunication.SlurmFunctions.models."
-
 
     def get_model_parameters(self, model_type: str):
         try:
@@ -82,12 +81,15 @@ class JobsManager:
                       dataset_path, user_email, str(output_size)]
 
         # TODO: delete the 2 lines bellow (for testing with anna)
-        slurmExecutableFile.create_and_run_model(user_email, job_name_by_user, model_type,
-                                                 model_details, dataset_path, output_size)
-        job_id = random()
+        # slurmExecutableFile.create_and_run_model(user_email, job_name_by_user, model_type,
+        #                                          model_details, dataset_path, output_size)
+        # job_id = random()
         # TODO: t - remove comments from the 2 lines bellow -- call slurm
         # batch_file = SlurmManager.create_sbatch_file(user_email, self.EXEC_FILE_PATH, param_list)
         # job_id = SlurmManager.run_job(user_email, batch_file)
+        self.EXEC_FILE_PATH = 'SlurmFunctions/./slurmExecutableFile.py'
+        job_id = SlurmManager.run_job_on_gpu(user_email, self.EXEC_FILE_PATH, param_list)
+        print("job ID is: " + str(job_id))
 
         # save job to db
         model_details['model_type'] = model_type
@@ -164,9 +166,10 @@ class JobsManager:
         Returns list of models names that are in folder "Domain1/models/"
         :return: example for return result = ["modelLSTM", "modelGRU", "modelDENSE"]
         """
-        # TODO: fix this line
-        # models: list = os.listdir('./models')
-        models: list = ["modelLSTM", "modelGRU", "modelDENSE"]
+        # TODO: the line bellow works on the university's server
+        models: list = os.listdir('./SlurmCommunication/SlurmFunctions/models')
+        # TODO: the line bellow works on the our personal computers
+        # models: list = os.listdir('../SlurmCommunication/SlurmFunctions/models')
         models = list(map(lambda name: name.split(".")[0], models))
         models = list(filter(lambda name: name not in ['Model', '__init__', '__pycache__'], models))
         return {'msg': "Success", 'data': models}
@@ -219,9 +222,7 @@ class JobsManager:
 if __name__ == '__main__':
 
     # SchedulerManager().run_job("modelLSTM", None, None, None, None)
-    print(JobsManager().get_model_parameters("modelLSTM"))
-
-    # print(JobsManager().get_models_types())
+    print(JobsManager().get_models_types())
     # logs_queries = {'age': ['RangeType', 80, 91], 'weather': ['AllValuesType']}
     # logs_queries = {'weather': ['AllValuesType']}
 

@@ -1,9 +1,7 @@
-import logging
 import os
 from unittest import TestCase
 from werkzeug.datastructures import FileStorage
 
-from DBCommunication.DBAccess import DBAccess
 from Domain import FlightsManager
 import mock
 
@@ -54,7 +52,7 @@ class TestUploadFlight(TestCase):
         self.text_file.write("This is a text file an not a log file.")
         self.text_file.close()
 
-    @mock.patch('DBCommunication.DBAccess.DBAccess')
+    @mock.patch('DBCommunication1.DBAccess.DBAccess')
     def test_valid_input(self, mock_db):
         mock_db.return_value = True
         self.assertTrue(FlightsManager.upload_flight(self.log_file, {}))
@@ -64,7 +62,7 @@ class TestUploadFlight(TestCase):
     #     self.assertTrue(FlightsManager.upload_flight(self.log_file, {}))
     #     self.assertTrue(FlightsManager.upload_flight(self.log_file, {'location': 'summer'}))
 
-    @mock.patch('DBCommunication.DBAccess.DBAccess')
+    @mock.patch('DBCommunication1.DBAccess.DBAccess')
     def test_invalid_input(self, mock_db):
         mock_db.return_value = True
         self.assertFalse(FlightsManager.upload_flight(None, {}))

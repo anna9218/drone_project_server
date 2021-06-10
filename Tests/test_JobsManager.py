@@ -9,7 +9,7 @@ class TestJobsManager(TestCase):
     def setUp(self):
         self.manager = JobsManager()
 
-    @mock.patch('Domain.models.Model.Model.get_parameters')
+    @mock.patch('Domain1.models.Model.Model.get_parameters')
     def test_get_model_parameters(self, mock_get_parameters):
         params = ['param1', 'param2']
         mock_get_parameters.return_value = params

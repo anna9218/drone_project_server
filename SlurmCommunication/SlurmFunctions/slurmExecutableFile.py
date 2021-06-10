@@ -1,15 +1,18 @@
 """
     This file should be located on the GPU server in SlurmFunctions directory!
 """
+import os
 import sys
 
 from jinja2.utils import import_string
 from jsonpickle import json
-# FILES_DIR = "SlurmFunctions.models."
+
+sys.path.append(os.getcwd().split('\SlurmCommunication\SlurmFunctions')[0])
 from DBCommunication.DBAccess import DBAccess
 from Domain.DataPreparation import DataPreparation
 
-FILES_DIR = "models."
+FILES_DIR = "SlurmFunctions.models."
+# FILES_DIR = "models."
 
 
 def create_and_run_model(user_email: str, job_name_by_user: str, model_type: str,

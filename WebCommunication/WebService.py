@@ -1,8 +1,12 @@
 import json
+import os
+import sys
+
 from flask import Flask, jsonify, request
 # TODO: for downloading flask_cors run this line in terminal: conda install -c anaconda flask_cors
 from flask_cors import CORS
 
+sys.path.append(os.getcwd().split('\WebCommunication')[0])
 from Domain import FlightsManager
 from Domain.JobsManager import JobsManager
 
@@ -17,7 +21,7 @@ CORS(app)
 @app.route('/upload_flight', methods=['POST'])
 def upload_flight():
     file = request.files['file']
-    parameters: dict = json.loads(request.form['parameters'])     # gets {'p1': 22, 'p2': 'sss'}
+    parameters: dict = json.loads(request.form['parameters'])  # gets {'p1': 22, 'p2': 'sss'}
     parameters['location'] = request.form['locationTags']
     response = FlightsManager.upload_flight(file, parameters)
     if response:
@@ -71,7 +75,8 @@ def run_new_job():
     # when i want all people with 18 <= age <= 60 :  'age':['RangeType', min_value, max_value]
     # when i want all people one of the following values spring, summer :  'weather':['SpecificValuesType', value1, value2]
     # when i want all people one of the following values spring :  'weather':['SpecificValuesType', value1]
-    response = JobsManager().run_new_job(user_email, job_name_by_user, model_type, model_details, logs_queries, target_variable)
+    response = JobsManager().run_new_job(user_email, job_name_by_user, model_type, model_details, logs_queries,
+                                         target_variable)
     return response
 
 

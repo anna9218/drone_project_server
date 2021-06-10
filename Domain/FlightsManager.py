@@ -1,4 +1,7 @@
 import os
+import sys
+
+sys.path.append(os.getcwd().split('\Domain')[0])
 from DBCommunication.DBAccess import DBAccess
 
 

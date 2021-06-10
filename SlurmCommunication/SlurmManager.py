@@ -1,3 +1,4 @@
+import os
 import subprocess
 from collections import defaultdict
 import time
@@ -13,6 +14,7 @@ gpu_addr = "shao@gpu.bgu.ac.il"
 gpu_pass = "shaiOz05"
 directory_of_slurm_functions_on_gpu = 'SlurmFunctions'
 run_job_path_on_gpu = directory_of_slurm_functions_on_gpu + '/runJob.py'
+
 
 
 def create_sbatch_file(user_email, path_to_python_job_file_to_run, param_list):
@@ -190,6 +192,11 @@ def copy_directory_to_gpu_server(path_to_dir):
     exe_cmd_on_gpu_server("scp -rp shao@132.72.67.188:" + path_to_dir + " shao@gpu.bgu.ac.il:/home/shao/")
 
 
+# Set up the Folder with needed files in the GPU server.
+copy_directory_to_gpu_server(os.getcwd() + "/SlurmCommunication/SlurmFunctions")
+
+
+
 from subprocess import Popen, PIPE
 
 # import subprocess
@@ -200,7 +207,7 @@ if __name__ == "__main__":
 
     # run_job_on_gpu('shao@bgu.ac.il', 'SlurmFunctions/./main.py', ['6000'])
     # TODO for eden:
-    # run_job_on_gpu('shao@bgu.ac.il', 'slurmExecutableFile.py', ['param list as created in my code'])
+    # run_job_on_gpu('shao@bgu.ac.il', ''SlurmFunctions/./slurmExecutableFile.py', ['param list as created in my code'])
 
     # print(check_all_user_jobs("shao@bgu.ac.il"))
 

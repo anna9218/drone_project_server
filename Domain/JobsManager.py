@@ -14,7 +14,7 @@ class JobsManager:
     db_access = DBAccess.getInstance()
     model = None
     EXEC_FILE_PATH = "../SlurmCommunication/SlurmFunctions/slurmExecutableFile.py"
-    MODELS_DIR_PATH = "SlurmCommunication.SlurmFunctions.models."
+    MODELS_DIR_PATH = "SlurmCommunication1.SlurmFunctions.models."
 
 
     def get_model_parameters(self, model_type: str):
@@ -158,7 +158,7 @@ class JobsManager:
 
     def get_models_types(self):
         """
-        Returns list of models names that are in folder "Domain/models/"
+        Returns list of models names that are in folder "Domain1/models/"
         :return: example for return result = ["modelLSTM", "modelGRU", "modelDENSE"]
         """
         # TODO: fix this line

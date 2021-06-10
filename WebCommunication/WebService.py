@@ -3,8 +3,12 @@ from flask import Flask, jsonify, request
 # TODO: for downloading flask_cors run this line in terminal: conda install -c anaconda flask_cors
 from flask_cors import CORS
 
-from Domain.JobsManager import JobsManager
 from Domain import FlightsManager
+from Domain.JobsManager import JobsManager
+
+# [print(s) for s in sys.path]
+# sys.path.append('/Domain1/')
+
 
 app = Flask(__name__)
 CORS(app)

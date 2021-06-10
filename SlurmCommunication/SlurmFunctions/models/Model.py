@@ -38,14 +38,14 @@ class Model:
     def __init__(self, parameters: dict = None):
         if parameters is not None:
             self.set_parameters_vals(parameters)
-        # self.model = getattr(import_string("Domain.models." + model_type), model_type)()
-        # self.model = getattr(import_string("Domain.models." + model_type), model_type)()
+        # self.model = getattr(import_string("Domain1.models." + model_type), model_type)()
+        # self.model = getattr(import_string("Domain1.models." + model_type), model_type)()
         # self = model
-        # self = getattr(import_string("Domain.models." + model_type), model_type)()
+        # self = getattr(import_string("Domain1.models." + model_type), model_type)()
         # self.set_first_layer()
 
         # TODO: the line bellow might be the right one
-        # self = getattr(import_string("Domain.models." + model_class), model_class)()
+        # self = getattr(import_string("Domain1.models." + model_class), model_class)()
 
     # def set_first_layer(self):
     #     """

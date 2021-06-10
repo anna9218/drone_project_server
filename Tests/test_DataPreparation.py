@@ -1,11 +1,7 @@
-import os
-import shutil
 from unittest import TestCase
 
-from DBCommunication.DBAccess import DBAccess
 from Domain import DataPreparation
 from Domain.DataPreparation import DataPreparation
-import mock
 
 from Tests.StubDBAccess import StubDBAccess
 
@@ -30,8 +26,8 @@ class TestDataPreparation(TestCase):
         self.dataPreparation.clear_data_folder()
 
 
-    # @mock.patch('DBCommunication.DBAccess.DBAccess.getInstance')
-    # @mock.patch('DBCommunication.DBAccess.DBAccess.fetch_flights')
+    # @mock.patch('DBCommunication1.DBAccess.DBAccess.getInstance')
+    # @mock.patch('DBCommunication1.DBAccess.DBAccess.fetch_flights')
     # def test_create_data_directories(self, mock_fetch_flights, mock_getInstance):
     #     mock_fetch_flights.return_value = [{'flle_name': 'log1.log', 'weather': 'summer'}]
     #     mock_getInstance.return_value = 'instance'

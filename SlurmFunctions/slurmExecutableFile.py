@@ -6,19 +6,21 @@ import sys
 import jinja2
 from jsonpickle import json
 
+
 sys.path.append(os.getcwd().split('\SlurmFunctions')[0])
-from DBCommunication.DBAccess import DBAccess
-from SlurmFunctions.DataPreparation import DataPreparation
+from SlurmFunctions.SplitData import SplitData
 
 FILES_DIR = "SlurmFunctions.models."
 # FILES_DIR = "models."
 
 
 def create_and_run_model(user_email: str, job_name_by_user: str, model_type: str,
-                         model_details: dict, dataset_path: str, output_size: int) -> None:
-    x_train, y_train, x_test, y_test = DataPreparation().split_to_train_test_from_csv(dataset_path)
-    # TODO: delete dataset_path file
+                         model_details: dict, dataset_path: str, output_size: int, num_of_features: int) -> None:
     print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    # x_train, y_train, x_test, y_test = DataPreparation().split_to_train_test_from_csv(dataset_path)
+    x_train, y_train, x_test, y_test = SplitData(num_of_features).split_to_train_test_from_csv(dataset_path)
+    # TODO: delete dataset_path file
+    os.remove(dataset_path)
     print('x_test')
     print(x_test)
     print('y_test')
@@ -43,7 +45,9 @@ def create_and_run_model(user_email: str, job_name_by_user: str, model_type: str
     # search in jobs table where job_name_by_user=job_name_by_user and user_email=user_email
     # DBAccess.getInstance().update_job({'job_name_by_user': job_name_by_user, 'user_email': user_email}, {'report': report})
 
+
 if __name__ == "__main__":
+    print('************************************')
     args = sys.argv
     # args[0] == fileName.
     whatToDo = args[1]
@@ -54,4 +58,5 @@ if __name__ == "__main__":
         dataset_path = args[5]
         user_email = args[6]
         output_size = int(args[7])
-        create_and_run_model(user_email, job_name_by_user, model_type, model_details, dataset_path, output_size)
+        num_of_features = int(args[8])
+        create_and_run_model(user_email, job_name_by_user, model_type, model_details, dataset_path, output_size, num_of_features)

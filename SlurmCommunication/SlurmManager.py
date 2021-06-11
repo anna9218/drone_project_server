@@ -2,6 +2,7 @@ import os
 import subprocess
 from collections import defaultdict
 import time
+from functools import reduce
 from sys import stdout
 
 """
@@ -210,12 +211,17 @@ def exe_cmd_on_gpu_server(cmd, fout=stdout):
 
 
 def move_file_to_gpu(source_path, dest_path):
-    with open("sourceFile.txt", "w+") as fout:
-        subprocess.call(["cat", source_path], stdout=fout)
-        fout.seek(0)
-        output = fout.read()
-        cmd = "echo " + output + " > " + dest_path
-        out = exe_cmd_on_gpu_server(cmd)
+    # with open("sourceFile.txt", "w+") as fout:
+    #     subprocess.call(["cat", source_path], stdout=fout)
+    #     fout.seek(0)
+    #     output = fout.read()
+    #     cmd = "echo " + output + " > " + dest_path
+    #     out = exe_cmd_on_gpu_server(cmd)
+    with open(source_path, "r") as file:
+        output = file.readlines()
+        output = reduce(lambda acc, curr: acc + str(curr), output)
+        cmd = "echo \'" + output + "\' > " + dest_path
+        exe_cmd_on_gpu_server(cmd)
 
 
 def get_job_report(user_email, job_name_by_user):
@@ -243,7 +249,6 @@ def copy_directory_to_gpu_server(path_to_dir):
 
 # Set up the Folder with needed files in the GPU server.
 copy_directory_to_gpu_server(os.getcwd() + "/SlurmFunctions")
-# copy_directory_to_gpu_server(os.getcwd() + "/SlurmCommunication/SlurmFunctions")
 
 
 
@@ -251,7 +256,7 @@ from subprocess import Popen, PIPE
 
 # import subprocess
 if __name__ == "__main__":
-    copy_directory_to_gpu_server("/home/shao/testSlurm/DirToCopy")
+    # copy_directory_to_gpu_server("/home/shao/testSlurm/DirToCopy")
 
     # subprocess.call(["scp", "shao@132.72.67.188:fileToSend.txt", "checkingSSH/"])
 
@@ -262,9 +267,20 @@ if __name__ == "__main__":
     # print(check_all_user_jobs("shao@bgu.ac.il"))
 
     # print(get_start_and_end_time("shao@dssd"))
+    #
+    # jobid = run_job_on_gpu('shao@bgu.ac.il', '../SlurmFunctions/./main.py', ['1000000000'])
+    # print("job ID is: " + str(jobid))
+    # time.sleep(2)
+    # cancel_job(jobid)
+    # print("canceled jobs: " + str(get_user_canceled_jobs("shao@bgu.ac.il")))
 
-    jobid = run_job_on_gpu('shao@bgu.ac.il', '../SlurmFunctions/./main.py', ['1000000000'])
-    print("job ID is: " + str(jobid))
-    time.sleep(2)
-    cancel_job(jobid)
-    print("canceled jobs: " + str(get_user_canceled_jobs("shao@bgu.ac.il")))
+
+    with open('dataset.csv', "r") as file:
+        output = file.readlines()
+        text = "\'"
+        for line in output:
+            text += str(line)
+        text += "\'"
+        print(text)
+        # cmd = "echo " + text + " > " + dest_path
+        # exe_cmd_on_gpu_server(cmd)

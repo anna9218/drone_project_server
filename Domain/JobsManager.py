@@ -4,13 +4,16 @@ from jinja2.utils import import_string
 from jsonpickle import json
 
 # OUR import
+
 sys.path.append(os.getcwd().split('\Domain')[0])
 from DBCommunication.DBAccess import DBAccess, MinType, MaxType, RangeType, SpecificValuesType
-from SlurmFunctions.DataPreparation import DataPreparation
+from Domain.DataPreparation import DataPreparation
 from SlurmCommunication import SlurmManager
 
+
 class JobsManager:
-    data_preparation = DataPreparation()
+    NUMBER_OF_FEATURES = 3 * 120    # 120 GPS points, and 3 coordinates for each GPS point (x, y, z) -> 120 *3
+    data_preparation = DataPreparation("../data", "dataset.csv", 20, NUMBER_OF_FEATURES)
     db_access = DBAccess.getInstance()
     model = None
     # EXEC_FILE_PATH = 'SlurmFunctions/./slurmExecutableFile.py'
@@ -82,7 +85,7 @@ class JobsManager:
         # dataset_path = self.data_preparation.create_csv_dataset(target_values)
         # dataset_path = '../data/dataset.csv'
         param_list = ['createAndRunModel', job_name_by_user, model_type, self.object_to_str(model_details),
-                      dest_dataset_path, user_email, str(output_size)]
+                      dest_dataset_path, user_email, str(output_size), str(self.NUMBER_OF_FEATURES)]
 
         # TODO: delete the 2 lines bellow (for testing with anna)
         # slurmExecutableFile.create_and_run_model(user_email, job_name_by_user, model_type,

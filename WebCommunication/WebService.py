@@ -10,10 +10,6 @@ sys.path.append(os.getcwd().split('\WebCommunication')[0])
 from Domain import FlightsManager
 from Domain.JobsManager import JobsManager
 
-# [print(s) for s in sys.path]
-# sys.path.append('/Domain1/')
-
-
 app = Flask(__name__)
 CORS(app)
 

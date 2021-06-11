@@ -1,13 +1,11 @@
 import os
 import sys
-from random import random
 from jinja2.utils import import_string
 from jsonpickle import json
 
 # OUR import
 sys.path.append(os.getcwd().split('\Domain')[0])
 from DBCommunication.DBAccess import DBAccess, MinType, MaxType, RangeType, SpecificValuesType
-from SlurmCommunication.SlurmFunctions import slurmExecutableFile
 from Domain.DataPreparation import DataPreparation
 from SlurmCommunication import SlurmManager
 
@@ -18,7 +16,8 @@ class JobsManager:
     # EXEC_FILE_PATH = 'SlurmFunctions/./slurmExecutableFile.py'
     EXEC_FILE_PATH = 'SlurmFunctions/./slurmExecutableFile.py'
     # EXEC_FILE_PATH = "../SlurmCommunication/SlurmFunctions/slurmExecutableFile.py"
-    MODELS_DIR_PATH = "SlurmCommunication.SlurmFunctions.models."
+    MODELS_DIR_PATH = "SlurmFunctions.models."
+    # MODELS_DIR_PATH = "SlurmCommunication.SlurmFunctions.models."
 
     def get_model_parameters(self, model_type: str):
         try:

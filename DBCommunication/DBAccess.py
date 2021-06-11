@@ -9,8 +9,8 @@ class Connect(object):
         password = "eden"
         port = 27017
         # url = "mongodb+srv://"+username+":"+password+"@dronescluster.srnyo.mongodb.net"
-        # url = "localhost:27017"
-        url = "132.72.67.188:27017"
+        url = "localhost:27017"
+        # url = "132.72.67.188:27017"
         return MongoClient(url)
 
 

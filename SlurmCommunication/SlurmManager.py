@@ -193,7 +193,8 @@ def copy_directory_to_gpu_server(path_to_dir):
 
 
 # Set up the Folder with needed files in the GPU server.
-copy_directory_to_gpu_server(os.getcwd() + "/SlurmCommunication/SlurmFunctions")
+copy_directory_to_gpu_server(os.getcwd() + "/SlurmFunctions")
+# copy_directory_to_gpu_server(os.getcwd() + "/SlurmCommunication/SlurmFunctions")
 
 
 
@@ -213,7 +214,7 @@ if __name__ == "__main__":
 
     # print(get_start_and_end_time("shao@dssd"))
 
-    jobid = run_job_on_gpu('shao@bgu.ac.il', 'SlurmFunctions/./main.py', ['1000000000'])
+    jobid = run_job_on_gpu('shao@bgu.ac.il', '../SlurmFunctions/./main.py', ['1000000000'])
     print("job ID is: " + str(jobid))
     time.sleep(2)
     cancel_job(jobid)

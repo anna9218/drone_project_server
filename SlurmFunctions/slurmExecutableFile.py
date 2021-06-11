@@ -6,7 +6,7 @@ import sys
 import jinja2
 from jsonpickle import json
 
-sys.path.append(os.getcwd().split('\SlurmCommunication\SlurmFunctions')[0])
+sys.path.append(os.getcwd().split('\SlurmFunctions')[0])
 from DBCommunication.DBAccess import DBAccess
 from Domain.DataPreparation import DataPreparation
 

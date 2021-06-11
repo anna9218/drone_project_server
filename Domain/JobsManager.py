@@ -83,8 +83,8 @@ class JobsManager:
         SlurmManager.move_file_to_gpu(dataset_path, dest_dataset_path)
         self.data_preparation.clear_data_folder()
         # dataset_path = '../data/dataset.csv'
-        param_list = ['createAndRunModel', job_name_by_user, model_type, self.object_to_str(model_details),
-                      dest_dataset_path, user_email, str(output_size), str(self.NUMBER_OF_FEATURES)]
+        param_list = ['createAndRunModel', job_name_by_user, model_type, dest_dataset_path, user_email,
+                      str(output_size), str(self.NUMBER_OF_FEATURES), self.object_to_str(model_details)]
 
         # TODO: delete the 2 lines bellow (for testing with anna)
         # from SlurmFunctions import slurmExecutableFile

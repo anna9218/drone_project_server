@@ -21,6 +21,8 @@ class DataPreparation:
         self.db = DBAccess.getInstance()
         self.div_num = div_num  # normalize the number to be < 1
         self.NUMBER_OF_FEATURES = number_of_features
+        self.NUMBER_OF_VECTORES = 3
+
 
     def isfloat(self, value):
         try:

@@ -1,6 +1,8 @@
 import sys
 
-from pandas import np
+# TODO maybe use pandas
+# from pandas import np
+import numpy as np
 import tensorflow as tf
 
 """

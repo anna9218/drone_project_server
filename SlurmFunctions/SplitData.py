@@ -2,7 +2,7 @@ from __future__ import absolute_import, division, unicode_literals
 import os
 import numpy as np
 import sys
-sys.path.append(os.getcwd().split('\SlurmFunctions')[0])
+# sys.path.append(os.getcwd().split('\SlurmFunctions')[0])
 
 
 class SplitData:
@@ -28,7 +28,8 @@ class SplitData:
             labels += [sample[-1]]  # we added float() after the int
         labels = np.array(labels)
         features = np.array(features)
-        features = features.reshape(len(_dataset) - 1, 1, self.NUMBER_OF_FEATURES)  # the -1 is becose the headers line
+        print(len(_dataset))
+        features = features.reshape(len(_dataset) - 1, 1, self.NUMBER_OF_FEATURES)  # the -1 is because the headers line
         return features, labels
 
     def split_to_train_and_test_sets_helper(self, features, labels, number_of_features):

@@ -54,7 +54,7 @@ if __name__ == "__main__":
     if whatToDo == "createAndRunModel":
         job_name_by_user = args[2]
         model_type = args[3]
-        model_details = json.loads(args[4])
+        model_details = json.loads("\"" + args[4] + "\"")
         dataset_path = args[5]
         user_email = args[6]
         output_size = int(args[7])

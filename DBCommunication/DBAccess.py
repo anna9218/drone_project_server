@@ -219,5 +219,6 @@ if __name__ == '__main__':
     #                                                      'report': 'accuracy=80%, loss=0.6'}
     #                                    })
     # DBAccess.getInstance().drop_db()
+    # DBAccess.getInstance().get_db().Flights.remove({'file_name': '2021-01-07 15-59-47 - Copy.log'})
     [print(x) for x in DBAccess.getInstance().fetch_flights([])]
 

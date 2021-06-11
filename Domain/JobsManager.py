@@ -82,22 +82,19 @@ class JobsManager:
         dest_dataset_path = "/home/shao/SlurmFunctions/dataset.csv"
         SlurmManager.move_file_to_gpu(dataset_path, dest_dataset_path)
         self.data_preparation.clear_data_folder()
-        # dataset_path = self.data_preparation.create_csv_dataset(target_values)
         # dataset_path = '../data/dataset.csv'
         param_list = ['createAndRunModel', job_name_by_user, model_type, self.object_to_str(model_details),
                       dest_dataset_path, user_email, str(output_size), str(self.NUMBER_OF_FEATURES)]
 
         # TODO: delete the 2 lines bellow (for testing with anna)
+        # from SlurmFunctions import slurmExecutableFile
         # slurmExecutableFile.create_and_run_model(user_email, job_name_by_user, model_type,
-        #                                          model_details, dataset_path, output_size)
+        #                                          model_details, dataset_path, output_size, self.NUMBER_OF_FEATURES)
+        # from random import random
         # job_id = random()
-        # TODO: t - remove comments from the 2 lines bellow -- call slurm
-        # batch_file = SlurmManager.create_sbatch_file(user_email, self.EXEC_FILE_PATH, param_list)
-        # job_id = SlurmManager.run_job(user_email, batch_file)
-
-        # self.EXEC_FILE_PATH = 'SlurmFunctions/./slurmExecutableFile.py'
+        # TODO: t - remove comments from the 1 lines bellow -- call slurm
         job_id = SlurmManager.run_job_on_gpu(user_email, self.EXEC_FILE_PATH, param_list)
-        # job_id = SlurmManager.run_job_on_gpu(user_email, self.EXEC_FILE_PATH, param_list)
+
         print("job ID is: " + str(job_id))
         if job_id == -1:
             return {'msg': 'Error with Slurm server connection.\nCouldn\'t submit job.', 'data': False}
@@ -269,20 +266,23 @@ class JobsManager:
 if __name__ == '__main__':
 
     # SchedulerManager().run_job("modelLSTM", None, None, None, None)
-    print(JobsManager().get_models_types())
+    # print(JobsManager().get_models_types())
     # logs_queries = {'age': ['RangeType', 80, 91], 'weather': ['AllValuesType']}
-    # logs_queries = {'weather': ['AllValuesType']}
+    logs_queries = {'weather': ['AllValuesType']}
+    p: dict = {'model_type': 'model_LSTM',
+               'optimizer': 'adam',
+               'metrics': ['accuracy'],
+               'iterations': 12,
+               'batch_size': 3,
+               'epochs': 5,
+               'neurons_in_layer': 64}
 
-    # JobsManager().run_new_job("modelLSTM", None, None, None, None, None, None, logs_queries, None, None, None)
+    JobsManager().run_new_job("eden@gmail.c","eden_job","modelLSTM", p, logs_queries, "weather")
 
     # print(JobsManager().get_model_parameters('modelLSTM'))
 
-    # p: dict = {'model_type': 'model_LSTM',
-    #            'optimizer': 'adam',
-    #            'metrics': ['accuracy'],
-    #            'iterations': 12,
-    #            'batch_size': 3,
-    #            'epochs': 5,
-    #            'neurons_in_layer': 6}
-    #
+
+    # print(type(json.dumps(p)))
+    # txt = json.dumps(p)
+    # print(json.loads(txt))
     # print(type(['accuracy']))

@@ -1,7 +1,7 @@
 from unittest import TestCase
 
-from Domain import DataPreparation
-from Domain.DataPreparation import DataPreparation
+from SlurmFunctions import DataPreparation
+from SlurmFunctions.DataPreparation import DataPreparation
 
 from Tests.StubDBAccess import StubDBAccess
 

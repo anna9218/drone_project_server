@@ -39,7 +39,8 @@ def create_sbatch_file(user_email, path_to_python_job_file_to_run, param_list):
     text += "\'### Start your code below #### \n\'"
     text += "\'module load anaconda \n\'"
     # !!!!! maybe change env to py36
-    text += "\'source activate projenv \n\'"
+    # text += "\'source activate projenv \n\'"
+    text += "\'source activate py36 \n\'"
     params_as_string = " ".join(param_list)
     text += "\'python " + path_to_python_job_file_to_run + " " + params_as_string + " \n\'"
 
@@ -65,6 +66,37 @@ def run_job_on_gpu(user_email, path_to_python_job_file_to_run, param_list):
         print("users_and_jobs: ")
         print(users_and_jobs)
         return job_id
+
+
+def get_all_user_jobs(user_email):
+    username = user_email.split('@')[0]
+    with open("all_jobs.txt", "w+") as fout:
+        cmd = "sacct -u " + username + " --format=JobID,JobName,State,Start,End"
+        out = exe_cmd_on_gpu_server(cmd, fout)
+        fout.seek(0)
+        output = fout.read()
+        all_jobs_list = output.split('\n')
+        if len(all_jobs_list) > 1:
+            tmp = all_jobs_list[2:]
+            final_list_of_jobs = []
+            for job_row in tmp:
+                job_id_with_junk = job_row.split(" ")[0]
+                job_id = job_id_with_junk.split(".")
+                if len(job_id) == 1:
+                    final_list_of_jobs.append(job_row)
+            final_data = []
+            for job in final_list_of_jobs:
+                list_of_id_start_end = list(filter(lambda el: el != "", job.split(" ")))
+                if len(list_of_id_start_end) > 0:
+                    final_data.append(list_of_id_start_end)
+            final_data = list(map(lambda el: {"job_id": el[0],
+                                              "job_name": el[1],
+                                              "state": el[2],
+                                              "start_time": el[3],
+                                              "end_time": el[4]}, final_data))
+            # subprocess.call(["rm", user_name + "StartAndEndTimes.txt"])
+            return final_data
+        return []
 
 
 def check_all_user_jobs(user_email):
@@ -177,8 +209,32 @@ def check_if_status_changed(job_id):
 
 def exe_cmd_on_gpu_server(cmd, fout=stdout):
     return subprocess.call(["sshpass", "-p", gpu_pass, "ssh", "-t", gpu_addr,
-                            'StrictHostKeyChecking=no; conda activate py36; ' + cmd + '; exit'], stdout=fout)
+                            'StrictHostKeyChecking=no; ' + cmd + '; exit'], stdout=fout)
 
+
+def move_file_to_gpu(source_path, dest_path):
+    with open("sourceFile.txt", "w+") as fout:
+        subprocess.call(["cat", source_path], stdout=fout)
+        fout.seek(0)
+        output = fout.read()
+        cmd = "echo " + output + " > " + dest_path
+        out = exe_cmd_on_gpu_server(cmd)
+
+
+def get_job_report(user_email, job_name_by_user):
+    """
+    report file will be under the name <user_email>_<job_name_by_user>_report.txt
+    and will be located in SlurmFunctions/reports directory
+    :param user_email: the user's email that submitted the job
+    :param job_name_by_user: job's name
+    :return: returns the report's content
+    """
+    user_name = user_email.split('@')[0]
+    with open("reportToReturn.txt", "w+") as fout:
+        cmd = "cat SlurmFunctions/reports/" + user_name + "_" + job_name_by_user + "_report.txt"
+        out = exe_cmd_on_gpu_server(cmd, fout)
+        fout.seek(0)
+        return fout.read()
 
 # from subprocess import Popen, PIPE
 # import subprocess

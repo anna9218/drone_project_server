@@ -3,7 +3,7 @@ from unittest import TestCase
 import tensorflow as tf
 from pandas import np
 
-from SlurmCommunication.SlurmFunctions.models.Model import Model
+from SlurmFunctions import Model
 
 
 class TestModel(TestCase):

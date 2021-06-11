@@ -75,7 +75,8 @@ class JobsManager:
         target_values = self.db_access.fetch_flight_param_values(target_variable)
         output_size = len(target_values)
         dataset_path = self.data_preparation.get_csv_with_prepared_data(logs_queries, target_variable, target_values)
-        dest_dataset_path = "/home/shao/SlurmFunctions/dataset.txt"
+
+        dest_dataset_path = "/home/shao/SlurmFunctions/dataset.csv"
         SlurmManager.move_file_to_gpu(dataset_path, dest_dataset_path)
         self.data_preparation.clear_data_folder()
         # dataset_path = self.data_preparation.create_csv_dataset(target_values)

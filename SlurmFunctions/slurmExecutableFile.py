@@ -18,7 +18,10 @@ def create_and_run_model(user_email: str, job_name_by_user: str, model_type: str
                          model_details: dict, dataset_path: str, output_size: int) -> None:
     x_train, y_train, x_test, y_test = DataPreparation().split_to_train_test_from_csv(dataset_path)
     # TODO: delete dataset_path file
+    print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    print('x_test')
     print(x_test)
+    print('y_test')
     print(y_test)
     print(x_train)
     print(y_train)
@@ -40,7 +43,6 @@ def create_and_run_model(user_email: str, job_name_by_user: str, model_type: str
     # search in jobs table where job_name_by_user=job_name_by_user and user_email=user_email
     # DBAccess.getInstance().update_job({'job_name_by_user': job_name_by_user, 'user_email': user_email}, {'report': report})
 
-
 if __name__ == "__main__":
     args = sys.argv
     # args[0] == fileName.
@@ -52,8 +54,4 @@ if __name__ == "__main__":
         dataset_path = args[5]
         user_email = args[6]
         output_size = int(args[7])
-        results = create_and_run_model(user_email, job_name_by_user, model_type, model_details, dataset_path, output_size)
-        print(results)
-    if whatToDo == "cancelJob":
-        job_id = args[2]
-        results = create_and_run_model(job_id)
+        create_and_run_model(user_email, job_name_by_user, model_type, model_details, dataset_path, output_size)

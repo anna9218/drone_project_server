@@ -52,11 +52,13 @@ if __name__ == "__main__":
     # args[0] == fileName.
     whatToDo = args[1]
     if whatToDo == "createAndRunModel":
+        print(args)
+
         job_name_by_user = args[2]
         model_type = args[3]
-        model_details = json.loads("\"" + args[4] + "\"")
-        dataset_path = args[5]
-        user_email = args[6]
-        output_size = int(args[7])
-        num_of_features = int(args[8])
+        dataset_path = args[4]
+        user_email = args[5]
+        output_size = int(args[6])
+        num_of_features = int(args[7])
+        model_details = json.loads("\"" + args[8] + "\"")
         create_and_run_model(user_email, job_name_by_user, model_type, model_details, dataset_path, output_size, num_of_features)

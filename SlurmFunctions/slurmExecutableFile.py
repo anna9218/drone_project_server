@@ -8,7 +8,7 @@ from jsonpickle import json
 
 sys.path.append(os.getcwd().split('\SlurmFunctions')[0])
 from DBCommunication.DBAccess import DBAccess
-from Domain.DataPreparation import DataPreparation
+from SlurmFunctions.DataPreparation import DataPreparation
 
 FILES_DIR = "SlurmFunctions.models."
 # FILES_DIR = "models."
@@ -17,6 +17,7 @@ FILES_DIR = "SlurmFunctions.models."
 def create_and_run_model(user_email: str, job_name_by_user: str, model_type: str,
                          model_details: dict, dataset_path: str, output_size: int) -> None:
     x_train, y_train, x_test, y_test = DataPreparation().split_to_train_test_from_csv(dataset_path)
+    # TODO: delete dataset_path file
     print(x_test)
     print(y_test)
     print(x_train)
@@ -28,11 +29,16 @@ def create_and_run_model(user_email: str, job_name_by_user: str, model_type: str
     # new_model = Model(model_type, model_details)
     new_model.set_output_size(output_size)
     new_model.set_train_test_sets(x_train, y_train, x_test, y_test)
-    report = new_model.train_and_predict_model()
+    report: dict = new_model.train_and_predict_model()
+
+    # saves the model report in file on GPU server
+    user_name = user_email.split('@')[0]
+    with open('reports/' + user_name + '_' + job_name_by_user + '_report.txt', 'w') as report_file:
+        report_file.write(json.dumps(report))
 
     # update model's results in DB with results
     # search in jobs table where job_name_by_user=job_name_by_user and user_email=user_email
-    DBAccess.getInstance().update_job({'job_name_by_user': job_name_by_user, 'user_email': user_email}, {'report': report})
+    # DBAccess.getInstance().update_job({'job_name_by_user': job_name_by_user, 'user_email': user_email}, {'report': report})
 
 
 if __name__ == "__main__":

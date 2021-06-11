@@ -1,5 +1,9 @@
+import os
+import sys
 import tensorflow as tf
-from SlurmCommunication.SlurmFunctions.models.Model import Model
+sys.path.append(os.getcwd().split('\SlurmFunctions\models')[0])
+from SlurmFunctions.models.Model import Model
+# from SlurmCommunication.SlurmFunctions.models.Model import Model
 # import Model
 
 """

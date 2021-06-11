@@ -88,7 +88,7 @@ class JobsManager:
         # batch_file = SlurmManager.create_sbatch_file(user_email, self.EXEC_FILE_PATH, param_list)
         # job_id = SlurmManager.run_job(user_email, batch_file)
         self.EXEC_FILE_PATH = 'SlurmFunctions/./slurmExecutableFile.py'
-        job_id = SlurmManager.run_job_on_gpu(user_email, self.EXEC_FILE_PATH, ['1000000000'])
+        job_id = SlurmManager.run_job_on_gpu(user_email, self.EXEC_FILE_PATH, param_list)
         # job_id = SlurmManager.run_job_on_gpu(user_email, self.EXEC_FILE_PATH, param_list)
         print("job ID is: " + str(job_id))
         if job_id == -1:

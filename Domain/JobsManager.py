@@ -16,7 +16,8 @@ class JobsManager:
     db_access = DBAccess.getInstance()
     model = None
     # EXEC_FILE_PATH = 'SlurmFunctions/./slurmExecutableFile.py'
-    EXEC_FILE_PATH = "../SlurmCommunication/SlurmFunctions/slurmExecutableFile.py"
+    EXEC_FILE_PATH = 'SlurmFunctions/./slurmExecutableFile.py'
+    # EXEC_FILE_PATH = "../SlurmCommunication/SlurmFunctions/slurmExecutableFile.py"
     MODELS_DIR_PATH = "SlurmCommunication.SlurmFunctions.models."
 
     def get_model_parameters(self, model_type: str):
@@ -87,8 +88,10 @@ class JobsManager:
         # TODO: t - remove comments from the 2 lines bellow -- call slurm
         # batch_file = SlurmManager.create_sbatch_file(user_email, self.EXEC_FILE_PATH, param_list)
         # job_id = SlurmManager.run_job(user_email, batch_file)
+
         self.EXEC_FILE_PATH = 'SlurmFunctions/./slurmExecutableFile.py'
         job_id = SlurmManager.run_job_on_gpu(user_email, self.EXEC_FILE_PATH, param_list)
+
         # job_id = SlurmManager.run_job_on_gpu(user_email, self.EXEC_FILE_PATH, param_list)
         print("job ID is: " + str(job_id))
         if job_id == -1:
@@ -105,7 +108,7 @@ class JobsManager:
         except:
             return {'msg': 'Error with saving job in DB.\nCouldn\'t submit job.', 'data': False}
 
-        return {'msg': 'Job ' + job_name_by_user + 'submitted successfully', 'data': True}
+        return {'msg': 'Job ' + job_name_by_user + ' was submitted successfully', 'data': True}
         # self.db_access.update_job({'job_name_by_user': job_name_by_user}, {'slurm_job_id': job_id})
 
         # X_train, y_train, X_test, y_test = self.data_preparation.split_to_train_test_from_csv(path)

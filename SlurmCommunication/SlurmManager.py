@@ -56,13 +56,10 @@ def run_job_on_gpu(user_email, path_to_python_job_file_to_run, param_list):
         print("file opened, about to call run job")
         cmd = 'python ' + run_job_path_on_gpu + ' ' + batch_file_name
         out = exe_cmd_on_gpu_server(cmd, fout)
-        print("run job called on gpu")
         fout.seek(0)
         output = fout.read()
-        print("output of our server after run job on gpu: "+output)
         job_id = output.split()[-1] if "Submitted batch job" in output else -1
         users_and_jobs[user_name].append(job_id)
-        print("job id: "+str(job_id))
         print("users_and_jobs: ")
         print(users_and_jobs)
         return job_id
@@ -239,10 +236,6 @@ def get_job_report(user_email, job_name_by_user):
 # from subprocess import Popen, PIPE
 # import subprocess
 def copy_directory_to_gpu_server(path_to_dir):
-    # cmd = "scp -rp shao@132.72.67.188:" + path_to_dir + " shao@gpu.bgu.ac.il:/home/shao/"
-    # subprocess.call(["sshpass", "-p", gpu_pass, "ssh", "-t", gpu_addr,
-    #                  'StrictHostKeyChecking=no; ' + cmd + '; exit'])
-    # # subprocess.call(["scp", "-rp", gpu_pass, "ssh", "-t", gpu_addr, 'StrictHostKeyChecking=no; '+cmd+';exit'])
     source_host = "shao@132.72.67.188"
     dest_host = gpu_addr
     exe_cmd_on_gpu_server("scp -rp shao@132.72.67.188:" + path_to_dir + " shao@gpu.bgu.ac.il:/home/shao/")
@@ -275,14 +268,3 @@ if __name__ == "__main__":
     time.sleep(2)
     cancel_job(jobid)
     print("canceled jobs: " + str(get_user_canceled_jobs("shao@bgu.ac.il")))
-
-
-# import sched, time
-# s = sched.scheduler(time.time, time.sleep)
-# def do_something(sc):
-#     print("Doing stuff...")
-#     # do your stuff
-#     s.enter(60, 1, do_something, (sc,))
-#
-# s.enter(60, 1, do_something, (s,))
-# s.run()

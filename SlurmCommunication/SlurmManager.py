@@ -177,7 +177,7 @@ def check_if_status_changed(job_id):
 
 def exe_cmd_on_gpu_server(cmd, fout=stdout):
     return subprocess.call(["sshpass", "-p", gpu_pass, "ssh", "-t", gpu_addr,
-                            'StrictHostKeyChecking=no; ' + cmd + '; exit'], stdout=fout)
+                            'StrictHostKeyChecking=no; conda activate py36; ' + cmd + '; exit'], stdout=fout)
 
 
 # from subprocess import Popen, PIPE

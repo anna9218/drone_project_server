@@ -111,7 +111,7 @@ def fetch_researcher_jobs():
 if __name__ == '__main__':
     ip = "132.72.67.188"
     # ip = "127.0.0.1"
-    port = 8020
+    port = 8021
     # app.run(host=ip, port=port, debug=True)
     app.run(host=ip, port=port)
 

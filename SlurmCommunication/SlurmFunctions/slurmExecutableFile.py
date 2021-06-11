@@ -3,7 +3,7 @@
 """
 import os
 import sys
-from jinja2.utils import import_string
+import jinja2
 from jsonpickle import json
 
 sys.path.append(os.getcwd().split('\SlurmCommunication\SlurmFunctions')[0])
@@ -24,7 +24,7 @@ def create_and_run_model(user_email: str, job_name_by_user: str, model_type: str
 
 
     # creates Class Object of type model_type, A class that inherits from  Model class
-    new_model = getattr(import_string(FILES_DIR + model_type), model_type)(model_details)
+    new_model = getattr(jinja2.utils.import_string(FILES_DIR + model_type), model_type)(model_details)
     # new_model = Model(model_type, model_details)
     new_model.set_output_size(output_size)
     new_model.set_train_test_sets(x_train, y_train, x_test, y_test)

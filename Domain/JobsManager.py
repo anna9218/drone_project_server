@@ -35,7 +35,7 @@ class JobsManager:
         return self.db_access.fetch_flight_param_values(param)
 
     def object_to_str(self, obj):
-        return json.dumps(obj)
+        return json.dumps(obj).replace("\"", "\\\"")
 
     def str_to_object(self, obj):
         return json.loads(obj)
@@ -80,6 +80,7 @@ class JobsManager:
         dataset_path = self.data_preparation.get_csv_with_prepared_data(logs_queries, target_variable, target_values)
 
         dest_dataset_path = "/home/shao/SlurmFunctions/dataset.csv"
+        # TODO retrun this line
         SlurmManager.move_file_to_gpu(dataset_path, dest_dataset_path)
         self.data_preparation.clear_data_folder()
         # dataset_path = '../data/dataset.csv'
@@ -180,9 +181,9 @@ class JobsManager:
         :return: example for return result = ["modelLSTM", "modelGRU", "modelDENSE"]
         """
         # TODO: the line bellow works on the university's server
-        models: list = os.listdir(self.MODELS_DIR_PATH2)
+        # models: list = os.listdir(self.MODELS_DIR_PATH2)
         # TODO: the line bellow works on the our personal computers
-        # models: list = os.listdir('../SlurmCommunication/SlurmFunctions/models')
+        models: list = os.listdir('../SlurmFunctions/models')
         models = list(map(lambda name: name.split(".")[0], models))
         models = list(filter(lambda name: name not in ['Model', '__init__', '__pycache__'], models))
         return {'msg': "Success", 'data': models}
@@ -264,7 +265,6 @@ class JobsManager:
 
 
 if __name__ == '__main__':
-
     # SchedulerManager().run_job("modelLSTM", None, None, None, None)
     # print(JobsManager().get_models_types())
     # logs_queries = {'age': ['RangeType', 80, 91], 'weather': ['AllValuesType']}
@@ -272,17 +272,29 @@ if __name__ == '__main__':
     p: dict = {'model_type': 'model_LSTM',
                'optimizer': 'adam',
                'metrics': ['accuracy'],
-               'iterations': 12,
-               'batch_size': 3,
+               'iterations': 6,
+               'batch_size': 24,
                'epochs': 5,
                'neurons_in_layer': 64}
 
-    JobsManager().run_new_job("eden@gmail.c","eden_job","modelLSTM", p, logs_queries, "weather")
+    # JobsManager().run_new_job("eden@gmail.c","eden_job","modelLSTM", p, logs_queries, "weather")
 
-    # print(JobsManager().get_model_parameters('modelLSTM'))
+    # import tensorflow as tf
+    # # print(JobsManager().get_model_parameters('modelLSTM'))
+    # model = tf.keras.models.Sequential([
+    #     tf.keras.layers.LSTM(64, input_shape=(None, 360)),
+    #     tf.keras.layers.BatchNormalization(),
+    #     tf.keras.layers.Dense(3)]
+    # )
+    # model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
+    #                    optimizer='adam',
+    #                    metrics=['accuracy'])
 
-
-    # print(type(json.dumps(p)))
+    print(type(str(p)))
+    print((json.dumps(p)))
+    x = json.dumps(p)
+    print(x.replace("\"", "\\\""))
+    print(type(p))
     # txt = json.dumps(p)
     # print(json.loads(txt))
     # print(type(['accuracy']))

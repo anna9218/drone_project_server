@@ -1,7 +1,6 @@
 import os
 import subprocess
 from collections import defaultdict
-import time
 from functools import reduce
 from sys import stdout
 
@@ -248,6 +247,7 @@ def copy_directory_to_gpu_server(path_to_dir):
 
 
 # Set up the Folder with needed files in the GPU server.
+# TODO return this line bellow
 copy_directory_to_gpu_server(os.getcwd() + "/SlurmFunctions")
 
 

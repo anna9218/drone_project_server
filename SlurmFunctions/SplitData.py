@@ -28,7 +28,6 @@ class SplitData:
             labels += [sample[-1]]  # we added float() after the int
         labels = np.array(labels)
         features = np.array(features)
-        print(len(_dataset))
         features = features.reshape(len(_dataset) - 1, 1, self.NUMBER_OF_FEATURES)  # the -1 is because the headers line
         return features, labels
 
@@ -73,7 +72,8 @@ class SplitData:
         with open(dataset_path, 'r') as file:
             dataset_csv.append(file.read())
         dataset_csv = dataset_csv[0].split('\n')
-        dataset_csv.remove(dataset_csv[len(dataset_csv)-1])
+        # remove empty lines
+        dataset_csv = list(filter(lambda line: line != "", dataset_csv))
         dataset_csv = [line.split(',') for line in dataset_csv]
 
         # convert array to dataset.

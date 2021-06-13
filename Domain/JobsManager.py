@@ -4,7 +4,6 @@ from jinja2.utils import import_string
 from jsonpickle import json
 
 # OUR import
-
 sys.path.append(os.getcwd().split('\Domain')[0])
 from DBCommunication.DBAccess import DBAccess, MinType, MaxType, RangeType, SpecificValuesType
 from Domain.DataPreparation import DataPreparation
@@ -181,9 +180,9 @@ class JobsManager:
         :return: example for return result = ["modelLSTM", "modelGRU", "modelDENSE"]
         """
         # TODO: the line bellow works on the university's server
-        # models: list = os.listdir(self.MODELS_DIR_PATH2)
+        models: list = os.listdir(self.MODELS_DIR_PATH2)
         # TODO: the line bellow works on the our personal computers
-        models: list = os.listdir('../SlurmFunctions/models')
+        # models: list = os.listdir('../SlurmFunctions/models')
         models = list(map(lambda name: name.split(".")[0], models))
         models = list(filter(lambda name: name not in ['Model', '__init__', '__pycache__'], models))
         return {'msg': "Success", 'data': models}
@@ -208,60 +207,40 @@ class JobsManager:
                            '}}
          'report': {accuracy: 80, loss: 0.43}}
         """
-        # TODO: 2. check the keys in each dict
-        # SlurmManager.get_job_report(user_email, job_name_by_user) this function return's content (string) of the report
+        # 1. get all user's jobs from db
+        jobs_db = DBAccess.getInstance().fetch_jobs({"user_email": user_email})
+        jobs_to_display: list = []
+        # check if updates are needed for user's jobs
+        if jobs_db.count() == 0:
+            return {'msg': "You don't have any jobs.", 'data': None}
 
-        # get jobs details from GPU server (slurm)
+        # 2. get jobs details from GPU server (slurm)
         jobs_gpu: list = SlurmManager.get_all_user_jobs(user_email)
         print("jobs_gpu : ")
         print(jobs_gpu)
-        # get all user's jobs from db
-        jobs_db = DBAccess.getInstance().fetch_jobs({"user_email": user_email})
-        jobs_to_display = []
-        # check if updates are needed for user's jobs
-        if len(jobs_db) == 0 and len(jobs_gpu) == 0:
-            return {'msg': "You don't have any jobs.", 'data': None}
+        # 3. combine jobs_db and jobs_gpu
         for job in jobs_db:
             # if job had report in db -> the job has already updated entirely
             if 'report' in job.keys():
                 jobs_to_display.append(job)
                 continue
-            job_gpu_details = list(filter(lambda j: j['job_id'] == job['job_id'], jobs_gpu))[0]
-            if job_gpu_details['state'] == 'COMPLETED':
-                job_gpu_details['report'] = SlurmManager.get_job_report(user_email, job['job_name_by_user'])
-            # update job details in db
-            DBAccess.getInstance().update_job({'job_name_by_user': job['job_name_by_user'], 'user_email': user_email}, job_gpu_details)
 
+            job_gpu_details = list(filter(lambda j: j['job_id'] == job['job_id'], jobs_gpu))
+            if len(job_gpu_details) != 0:
+                job_gpu_details = job_gpu_details[0]
+                if job_gpu_details['state'] == 'COMPLETED':
+                    # TODO: check this functions get_job_report
+                    job_gpu_details['report'] = SlurmManager.get_job_report(user_email, job['job_name_by_user'])
+                # update job details in db
+                DBAccess.getInstance().update_job({'job_name_by_user': job['job_name_by_user'], 'user_email': user_email},
+                                                  job_gpu_details)
+            else:
+                job_gpu_details = dict()
             # combine the 2 job dicts
-            jobs_to_display.append(job | job_gpu_details)
+            job.update(job_gpu_details)
+            jobs_to_display.append(job)
 
         return {'msg': "Success", 'data': jobs_to_display}
-
-
-
-        # # get jobs details from slurm
-        # jobs_details: list = SlurmManager.check_all_user_jobs(user_email)
-        # # jobs_details[i] = "JobID JobName Partition Account AllocCPUS State ExitCode"
-        # jobs_details = list(map(lambda job: job.split(" "), jobs_details))
-        # jobs_dicts: list = []
-        # for job in jobs_details:
-        #     jobs_dicts.append({"job_id": job[0], "JobName": job[1], "Partition": job[2], "Account": job[3],
-        #                        "AllocCPUS": job[4], "status": job[5], "ExitCode": job[6]})
-        # jobs_model_details = DBAccess.getInstance().fetch_jobs({"user_email": user_email})
-        #
-        # if len(jobs_details) == 0 and len(jobs_model_details) == 0:
-        #     return {'msg': "You don'd have any jobs.", 'data': []}
-        # jobs_start_and_end_times = SlurmManager.get_start_and_end_time(user_email)
-        # for job in jobs_dicts:
-        #     job_additional_details: dict = list(filter(lambda j: j["slurm_job_id"] == job["job_id"], jobs_model_details))[0]
-        #     job_start_and_end_time: dict = list(filter(lambda j: j["JobID"] == job["job_id"], jobs_start_and_end_times))[0]
-        #     # a= list(map(lambda key: job[key] = additional_details[key] ,additional_details.keys()))
-        #     for key in job_additional_details.keys():
-        #         job[key] = job_additional_details[key]
-        #     for key in job_start_and_end_time.keys():
-        #         if key != "JobID":
-        #             job[key] = job_start_and_end_time[key]
-        # return {'msg': "Success", 'data': jobs_dicts}
 
 
 if __name__ == '__main__':
@@ -279,22 +258,7 @@ if __name__ == '__main__':
 
     # JobsManager().run_new_job("eden@gmail.c","eden_job","modelLSTM", p, logs_queries, "weather")
 
-    # import tensorflow as tf
-    # # print(JobsManager().get_model_parameters('modelLSTM'))
-    # model = tf.keras.models.Sequential([
-    #     tf.keras.layers.LSTM(64, input_shape=(None, 360)),
-    #     tf.keras.layers.BatchNormalization(),
-    #     tf.keras.layers.Dense(3)]
-    # )
-    # model.compile(loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-    #                    optimizer='adam',
-    #                    metrics=['accuracy'])
+    jobs = JobsManager().fetch_researcher_jobs("edenta@post.bgu.ac.il")
+    print(jobs['msg'])
+    [print(i) for i in jobs['data']]
 
-    print(type(str(p)))
-    print((json.dumps(p)))
-    x = json.dumps(p)
-    print(x.replace("\"", "\\\""))
-    print(type(p))
-    # txt = json.dumps(p)
-    # print(json.loads(txt))
-    # print(type(['accuracy']))

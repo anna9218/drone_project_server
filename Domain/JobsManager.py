@@ -220,6 +220,8 @@ class JobsManager:
         print(jobs_gpu)
         # 3. combine jobs_db and jobs_gpu
         for job in jobs_db:
+            if '_id' in job.keys():
+                job.pop('_id', None)
             # if job had report in db -> the job has already updated entirely
             if 'report' in job.keys():
                 jobs_to_display.append(job)

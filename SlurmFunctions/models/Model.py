@@ -1,7 +1,4 @@
 import sys
-
-# TODO maybe use pandas
-# from pandas import np
 import numpy as np
 import tensorflow as tf
 
@@ -39,20 +36,6 @@ class Model:
     def __init__(self, parameters: dict = None):
         if parameters is not None:
             self.set_parameters_vals(parameters)
-        # self.model = getattr(import_string("Domain1.models." + model_type), model_type)()
-        # self.model = getattr(import_string("Domain1.models." + model_type), model_type)()
-        # self = model
-        # self = getattr(import_string("Domain1.models." + model_type), model_type)()
-        # self.set_first_layer()
-
-        # TODO: the line bellow might be the right one
-        # self = getattr(import_string("Domain1.models." + model_class), model_class)()
-
-    # def set_first_layer(self):
-    #     """
-    #     This method will be override
-    #     """
-    #     pass
 
     def get_parameters(self) -> list:
         """
@@ -72,16 +55,6 @@ class Model:
         """
         for key in params_val.keys():
             self.params[key] = params_val[key]
-
-    # def set_prediction_variable(self, variable_name: str, variable_values: list) -> bool:
-    #     """
-    #         3. set prediction variable's name and values
-    #     :param variable_name:
-    #     :param variable_values:
-    #     :return:
-    #     """
-    #     self.prediction_variable = {'variable_name': variable_name, 'variable_values': variable_values}
-    #     self.output_size = len(variable_values)
 
     def set_output_size(self, output_size):
         self.output_size = output_size
@@ -122,20 +95,6 @@ class Model:
 
     def get_report(self):
         results_np = np.array(self.results)
-        # sumery_str = ""
-        # sumery_str += ("mean = " + "%.5f" % results_np.mean())
-        # sumery_str += (", std: " + "%.5f" % results_np.std())
-        # sumery_str += (", model_name: " + self.model_type)
-        # sumery_str += (", optimizer: " + self.params['optimizer'])
-        # sumery_str += (", iterations: " + str(self.params['iterations']))
-        # sumery_str += (", batch_size: " + str(self.params['batch_size']))
-        # sumery_str += (", epochs: " + str(self.params['epochs']))
-        # sumery_str += (", neurons_in_layer: " + str(self.params['neurons_in_layer']))
-        # sumery_str += (", min: " + "%.5f" % results_np.min())
-        # sumery_str += (", max: " + "%.5f" % results_np.max())
-        # sumery_str += (", results: " + str(list(map(lambda x: "%.5f" % x, self.results))))
-        # return sumery_str
-
         sumery_dict = dict()
         sumery_dict['mean'] = "%.3f" % results_np.mean() + '%'
         sumery_dict['std'] = "%.3f" % results_np.std() + '%'

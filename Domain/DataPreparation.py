@@ -6,15 +6,22 @@ from functools import reduce
 sys.path.append(os.getcwd().split('\DataPreparation')[0])
 from DBCommunication.DBAccess import DBAccess
 
+"""
+    This class is responsible for preparing the flights data.
+    The prepared data will be saved in a CSV file and will be ready for the CNN model analysis.
+"""
+
 
 class DataPreparation:
 
     def __init__(self, data_dir_path, file_name, div_num, number_of_features):
-        # self.div_num = 20  # normalize the number to be < 1
-        # self.DS_FOLDER = "../data"
-        # self.DATASET_FILE_NAME = "dataset.csv"
-        # self.DATASET_FILE_PATH = self.DS_FOLDER + '/' + self.DATASET_FILE_NAME
-        # self.db = DBAccess.getInstance()
+        """
+        :param data_dir_path: Path to wanted directory, where the csv file will be saved.
+        :param file_name: Name of the CSV file. In this file the prepared data will be saved and ready for analysis.
+        :param div_num:
+        :param number_of_features: number of features
+        """
+
         self.DS_FOLDER = data_dir_path
         self.DATASET_FILE_NAME = file_name
         self.DATASET_FILE_PATH = self.DS_FOLDER + '/' + self.DATASET_FILE_NAME
@@ -22,7 +29,6 @@ class DataPreparation:
         self.div_num = div_num  # normalize the number to be < 1
         self.NUMBER_OF_FEATURES = number_of_features
         self.NUMBER_OF_VECTORES = 3
-
 
     def isfloat(self, value):
         try:
@@ -121,20 +127,13 @@ class DataPreparation:
                     # output_file.write('TimeStamp' + '\t' + 'POS_X' + '\t' + 'POS_Y' + '\t' + 'POS_Z' + '\n')
                     output_file.write(file['data'] + '\n')
                     output_file.close()
-        """
-                    Creates datasets csv file, each line in the file will be [x1,y1,z1,..., x120, y120, z120, prediction_value]
-                :param prediction_values: list of the optional outputs to the prediction field (label, y)
-                        (for example: for prediction field 'weather' -> prediction_values = ['summer', 'winter', 'spring'])
-                :return: the file's path
-                """
+
         # 3. get all files in a list from all the directories
         files_names = []
         for __, directories, __ in os.walk(self.DS_FOLDER):
             for directory in directories:
                 for __, __, files in os.walk(self.DS_FOLDER + "/" + directory):
                     files_names += list(map(lambda file: {'file_name': file, 'folder': directory}, files))
-
-        # self.CLASS_NAMES = prediction_values
 
         dataset = self.create_data_set(files_names)
         header_data = [len(dataset), self.NUMBER_OF_FEATURES] + prediction_values
@@ -153,7 +152,3 @@ class DataPreparation:
         if os.path.exists(self.DS_FOLDER):
             for __, directories, __ in os.walk(self.DS_FOLDER):
                 [shutil.rmtree(self.DS_FOLDER + "/" + dir) for dir in directories]
-
-
-if __name__ == "__main__":
-    print("hjj")

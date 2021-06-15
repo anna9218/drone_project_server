@@ -1,12 +1,8 @@
 import os
 import sys
 import tensorflow as tf
-# import Model
 sys.path.append(os.getcwd().split('\SlurmFunctions\models')[0])
 from SlurmFunctions.models.Model import Model
-
-# from SlurmCommunication.SlurmFunctions.models.Model import Model
-# import SlurmCommunication
 
 """
     A class that inherits from a Model class

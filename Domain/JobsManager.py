@@ -26,8 +26,8 @@ class JobsManager:
     EXEC_FILE_PATH = 'SlurmFunctions/./slurmExecutableFile.py'
     MODELS_DIR_PATH_ON_GPU = "SlurmFunctions.models."
     MODELS_DIR_PATH_ON_LOCAL = "./SlurmFunctions/models"
-    user_name = ""
-    dest_dataset_path = "/home/shao/SlurmFunctions/dataset.csv"
+    user_name = "shao"
+    dest_dataset_path = "/home/"+user_name+"/SlurmFunctions/dataset.csv"
 
     def get_model_parameters(self, model_type: str):
         try:

@@ -3,8 +3,6 @@ import sys
 import tensorflow as tf
 sys.path.append(os.getcwd().split('\SlurmFunctions\models')[0])
 from SlurmFunctions.models.Model import Model
-# from SlurmCommunication.SlurmFunctions.models.Model import Model
-# import Model
 
 """
     A class that inherits from a Model class
@@ -19,6 +17,3 @@ class modelDENSE(Model):
         super().__init__(parameters)
         self.first_layer = tf.keras.layers.Dense(self.params['neurons_in_layer'], input_shape=(None, self.input_dim))
         self.model_type = "modelDENSE"
-
-    # def set_first_layer(self):
-    #     self.first_layer = tf.keras.layers.Dense(self.params['neurons_in_layer'], input_shape=(None, self.input_dim))

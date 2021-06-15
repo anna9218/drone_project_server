@@ -5,16 +5,13 @@ import os
 import sys
 import traceback
 from functools import reduce
-
 import jinja2
 from jsonpickle import json
-
 
 sys.path.append(os.getcwd().split('\SlurmFunctions')[0])
 from SlurmFunctions.SplitData import SplitData
 
 FILES_DIR = "SlurmFunctions.models."
-# FILES_DIR = "models."
 
 
 def create_and_run_model(user_email: str, job_name_by_user: str, model_type: str,

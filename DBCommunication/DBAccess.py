@@ -1,4 +1,3 @@
-# from mongo import Cursor
 from pymongo import MongoClient
 
 
@@ -10,7 +9,6 @@ class Connect(object):
         port = 27017
         # url = "mongodb+srv://"+username+":"+password+"@dronescluster.srnyo.mongodb.net"
         url = "localhost:27017"
-        # url = "132.72.67.188:27017"
         return MongoClient(url)
 
 
@@ -33,7 +31,6 @@ class SpecificValuesType(ValuesType):
 
 
 class RangeType(ValuesType):
-    # db.Flights.find({self.param_name: {"$gte": self.min_value, "$lte": self.max_value}})
     min_value = 0
     max_value = 0
 
@@ -45,12 +42,8 @@ class RangeType(ValuesType):
     def get_value(self):
         return {"$gte": self.min_value, "$lte": self.max_value}
 
-    # def fetch_from_db(self, db):
-    #     return db.Flights.find({self.param_name: {"$gte": self.min_value, "$lte": self.max_value}})
-
 
 class MinType(ValuesType):
-    # return db.Flights.find({self.param_name: {"$gte": self.min_value}})
     min_value = 0
 
     def __init__(self, param_name, min_value):
@@ -60,12 +53,7 @@ class MinType(ValuesType):
     def get_value(self):
         return {"$gte": self.min_value}
 
-    # def fetch_from_db(self, db):
-    #     return db.Flights.find({self.param_name: {"$gte": self.min_value}})
-
-
 class MaxType(ValuesType):
-    #     return db.Flights.find({self.param_name: {"$lte": self.max_value}})
     max_value = 0
 
     def __init__(self, param_name, max_value):
@@ -74,10 +62,6 @@ class MaxType(ValuesType):
 
     def get_value(self):
         return {"$lte": self.max_value}
-
-    # def fetch_from_db(self, db):
-    #     return db.Flights.find({self.param_name: {"$lte": self.max_value}})
-
 
 class DBAccess:
     db = None
@@ -122,10 +106,6 @@ class DBAccess:
         """ """
         self.db.Flights.insert_one(data)
 
-    # def find_one(self, parameters: dict):
-    #     # return self.db.getCollection(collection_name).find_one(data)
-    #     return self.flights_collection.find_one(parameters)
-
     def fetch_flights(self, parameters: list):
         """
         :param parameters: [angeValues, MaxValue, MinValue, ...]
@@ -168,57 +148,5 @@ class DBAccess:
 
 
 if __name__ == '__main__':
-    # client = MongoClient(
-    #     "mongodb+srv://eden:eden@dronescluster.srnyo.mongodb.net")
-    # db = client.test_db
-    # test_coll = db.test
-    # res = test_coll.find_one({'age': 15})
-    # test_coll.insert_one({'flie_name':'file', 'age': 30})
-    # client.close()
-    # # print(res)
-    # DBAccess.getInstance().insert_flight({'a': 'sss', 'age': 52})
-    # DBAccess.getInstance().insert_flight({'a': 'ede', 'age': 31})
-    # DBAccess.getInstance().insert_flight({'a': 'sdfdf', 'age': 50})
-    # # print(FlightDBAccess.getInstance().find_one({'age': 18}))
-    # # FlightDBAccess.getInstance().insert_user({'username': 'shai', 'pass': 777})
-    # # for x in FlightDBAccess.getInstance().get_users({'pass': 777}):
-    # #     print(x)
-    # [print(x) for x in DBAccess.getInstance().get_flights([])]
-    # # range_param = MinType('age',  89)
-    # print('-------------')
-    # # ks = range_param.fetch_from_db(FlightDBAccess.getInstance().get_db())
-    # # [print(x) for x in ks]
-    #
-    # ls = DBAccess.getInstance().get_flights([MinType('age', 50)])
-    # # ls = DBAccess.getInstance().get_flights([MinType('age', 50), SpecificValuesType('weather', ['winter', 'spring', 'summer'])])
-    # # ls = FlightDBAccess.getInstance().get_flights([ MinType('age',  89)])
-    # [print(x) for x in ls]
-    # ls = DBAccess.getInstance().fetch_flights([])
-    # print("f")
-    # ls = [SpecificValuesType('weather', DBAccess.getInstance().get_flights([]).distinct('weather')), MinType('age',10)]
-    # DBAccess.getInstance().insert_job({'job_name': 'sss', 'age': 52})
-    # [print(x) for x in DBAccess.getInstance().fetch_jobs({})]
-    # print('-------------')
-    # DBAccess.getInstance().update_job({'job_name': 'sss'}, {'job_id': 56161516})
-    # [print(x) for x in DBAccess.getInstance().fetch_jobs({})]
-    # # FlightDBAccess.getInstance().
-
-    # DBAccess.getInstance().insert_flight({'file_name': "AnnaFile", 'data': 123123, 'weather': 'spring', 'age': 30})
-    # DBAccess.getInstance().insert_job({'user_email': "anna@com",
-    #                                    'job_name_by_user': "first_job",
-    #                                    'slurm_job_id': 123,
-    #                                    'model_details': {'model_type': 'modelLSTM',
-    #                                                      'target_variable': 'weather',
-    #                                                      'target_values': ['summer', 'spring'],
-    #                                                      'optimizer': 'adam',
-    #                                                      'metrics': ['accuracy'],
-    #                                                      'iterations': 10,
-    #                                                      'batch_size': 5,
-    #                                                      'epochs': 8,
-    #                                                      'neurons_in_layer': 64,
-    #                                                      'report': 'accuracy=80%, loss=0.6'}
-    #                                    })
     # DBAccess.getInstance().drop_db()
-    # DBAccess.getInstance().get_db().Flights.remove({'file_name': '2021-01-07 15-59-47 - Copy.log'})
-    [print(x) for x in DBAccess.getInstance().fetch_flights([])]
-
+    pass

@@ -24,4 +24,3 @@ if __name__ == "__main__":
     # user_email = args[1]
     sbatch_file_name = args[1]
     run_job(sbatch_file_name)
-    # run_job("shao@post.bgu.ac.il", ".././myTestBatch.txt")

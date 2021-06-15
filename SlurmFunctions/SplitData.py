@@ -1,10 +1,10 @@
 from __future__ import absolute_import, division, unicode_literals
-import os
 import numpy as np
-import sys
-# sys.path.append(os.getcwd().split('\SlurmFunctions')[0])
 
-
+"""
+    This class will be copied to the GPU server.
+    
+"""
 class SplitData:
 
     def __init__(self, number_of_features):
@@ -24,7 +24,6 @@ class SplitData:
             tmp_features = sample[:-1]
             tmp_features = [float(i) for i in tmp_features]
             features += [tmp_features]
-            # labels += [int(float(sample[-1]))]  # we added float() after the int
             labels += [sample[-1]]  # we added float() after the int
         labels = np.array(labels)
         features = np.array(features)
@@ -57,7 +56,6 @@ class SplitData:
 
         return X_train[1:], y_train, X_test[1:], y_test
 
-    # @staticmethod
     def split_to_train_test_from_csv(self, dataset_path):
         """
             this function will run by slurm, reads the data_sets and split is to X_train, y_train, X_test, y_test
@@ -67,7 +65,6 @@ class SplitData:
         """
 
         # create data sets, each line will be [x1,y1,z1,..., x120, y120, z120, prediction_value]
-        # dataset_csv = self.create_csv_dataset(self.NUMBER_OF_FEATURES, self.DATASET_FILE_PATH, prediction_values)
         dataset_csv = []
         with open(dataset_path, 'r') as file:
             dataset_csv.append(file.read())
@@ -98,10 +95,3 @@ class SplitData:
                                                      number_of_features=int(all_features.shape[0] * 0.8))
 
         return X_train, y_train, X_test, y_test
-
-
-if __name__ == '__main__':
-    # path = DataPreparation().create_csv_dataset(['summer', 'winter', 'spring'])
-    # X_train, y_train, X_test, y_test = DataPreparation().split_to_train_test_from_csv('../data/dataset.csv')
-    # print(X_train, y
-    pass

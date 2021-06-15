@@ -62,23 +62,8 @@ def run_new_job():
     user_email: str = request.form['user_email']
     model_type: str = request.form['model_type']
     model_details: dict = json.loads(request.form['model_details'])
-    # model_details: {'optimizer': str,
-    #                 'metrics': list(str),
-    #                 'iterations': int,
-    #                 'batch_size': int,
-    #                 'epochs': int,
-    #                 'neurons_in_layer': int}
     logs_queries: dict = json.loads(request.form['logs_queries'])
     target_variable = request.form['target_variable']
-
-    # logs_queries from anna : logs_queries: dict = {'age': ['RangeType', min_value, max_value],
-    #                                                'age': ['MinType', min_value],
-    #                                                'hour': ['MaxType', max_value],...}
-    # when i want all people with age >= 18 :  'age':['MinType', min_value]
-    # when i want all people with age <= 60 :  'age':['MaxType', max_value]
-    # when i want all people with 18 <= age <= 60 :  'age':['RangeType', min_value, max_value]
-    # when i want all people one of the following values spring, summer :  'weather':['SpecificValuesType', value1, value2]
-    # when i want all people one of the following values spring :  'weather':['SpecificValuesType', value1]
     response = JobsManager().run_new_job(user_email, job_name_by_user, model_type, model_details, logs_queries,
                                          target_variable)
     return response
@@ -106,20 +91,5 @@ def fetch_researcher_jobs():
 
 if __name__ == '__main__':
     ip = "132.72.67.188"
-    # ip = "127.0.0.1"
     port = 8021
-    # app.run(host=ip, port=port, debug=True)
     app.run(host=ip, port=port)
-
-    # job_name_by_user: str = 'our first job'
-    # user_email: str = 'shaio@blaaa'
-    # model_type: str = 'modelLSTM'
-    # model_details: dict = {'optimizer': 'adam',
-    #                         'metrics': ['accuracy'],
-    #                         'iterations': 10,
-    #                         'batch_size': 6,
-    #                         'epochs': 6,
-    #                         'neurons_in_layer': 64}
-    # logs_queries: dict = None
-    # target_variable = None
-    # JobsManager().run_new_job(user_email, job_name_by_user, model_type, model_details, logs_queries, target_variable)

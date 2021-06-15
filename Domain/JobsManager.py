@@ -21,6 +21,7 @@ class JobsManager:
     MODELS_DIR_PATH = "SlurmFunctions.models."
     MODELS_DIR_PATH2 = "./SlurmFunctions/models"
     # MODELS_DIR_PATH = "SlurmCommunication.SlurmFunctions.models."
+    user_name = ""
 
     def get_model_parameters(self, model_type: str):
         try:
@@ -72,8 +73,8 @@ class JobsManager:
                                                                                 0] == 'SpecificValuesType' else
             SpecificValuesType(param_name, self.db_access.fetch_flights([]).distinct(param_name)) if
             logs_queries[param_name][0] == 'AllValuesType' else
-            RangeType(param_name, logs_queries[param_name][1], logs_queries[param_name][2]) for param_name in
-            logs_queries.keys()]
+            RangeType(param_name, logs_queries[param_name][1], logs_queries[param_name][2])
+            for param_name in logs_queries.keys()]
         target_values = self.db_access.fetch_flight_param_values(target_variable)
         output_size = len(target_values)
         dataset_path = self.data_preparation.get_csv_with_prepared_data(logs_queries, target_variable, target_values)
@@ -230,7 +231,9 @@ class JobsManager:
             job_gpu_details = list(filter(lambda j: j['job_id'] == job['job_id'], jobs_gpu))
             if len(job_gpu_details) != 0:
                 job_gpu_details = job_gpu_details[0]
-                if job_gpu_details['state'] == 'COMPLETED':
+                job_gpu_details['status'] = job_gpu_details['state']
+                job_gpu_details.pop('state', None)
+                if job_gpu_details['status'] == 'COMPLETED':
                     # TODO: check this functions get_job_report
                     job_gpu_details['report'] = SlurmManager.get_job_report(user_email, job['job_name_by_user'])
                 # update job details in db

@@ -10,11 +10,11 @@ from sys import stdout
 """
 
 users_and_jobs = defaultdict(list)
+local_addr = "shao@gpu.bgu.ac.il"
 gpu_addr = "shao@gpu.bgu.ac.il"
 gpu_pass = "shaiOz05"
 directory_of_slurm_functions_on_gpu = 'SlurmFunctions'
 run_job_path_on_gpu = directory_of_slurm_functions_on_gpu + '/runJob.py'
-
 
 
 def create_sbatch_file(user_email, path_to_python_job_file_to_run, param_list):
@@ -25,7 +25,8 @@ def create_sbatch_file(user_email, path_to_python_job_file_to_run, param_list):
     text += "\'#!/bin/bash \n\n\'"
     text += "\'#SBATCH --partition main \n\'"
     text += "\'#SBATCH --time 0-10:00:00 \n\'"
-    text += "\'#SBATCH --job-name "+user_name+str(len(users_and_jobs[user_name]) + 1)+"_job \n\'"
+    # text += "\'#SBATCH --job-name "+user_name+str(len(users_and_jobs[user_name]) + 1)+"_job \n\'"
+    text += "\'#SBATCH --job-name "+user_name+"_JOBNUM_"+str(len(users_and_jobs[user_name]) + 1)+"_job \n\'"
     text += "\'#SBATCH --output job-%J.out \n\'"
     text += "\'#SBATCH --mail-user="+user_email+" \n\'"
     text += "\'#SBATCH --mail-type=ALL \n\'"
@@ -66,23 +67,25 @@ def run_job_on_gpu(user_email, path_to_python_job_file_to_run, param_list):
 
 
 def get_all_user_jobs(user_email):
+    # gpu_user = gpu_addr.split('@')[0]
     username = user_email.split('@')[0]
     with open("all_jobs.txt", "w+") as fout:
-        cmd = "sacct -u " + username + " --format=JobID,JobName,State,Start,End"
+        cmd = "sacct --format=JobID,JobName,State,Start,End"
+        # cmd = "sacct -u " + username + " --format=JobID,JobName,State,Start,End"
         out = exe_cmd_on_gpu_server(cmd, fout)
         fout.seek(0)
         output = fout.read()
         all_jobs_list = output.split('\n')
         if len(all_jobs_list) > 1:
             tmp = all_jobs_list[2:]
-            final_list_of_jobs = []
+            clean_list_of_jobs = []
             for job_row in tmp:
                 job_id_with_junk = job_row.split(" ")[0]
                 job_id = job_id_with_junk.split(".")
                 if len(job_id) == 1:
-                    final_list_of_jobs.append(job_row)
+                    clean_list_of_jobs.append(job_row)
             final_data = []
-            for job in final_list_of_jobs:
+            for job in clean_list_of_jobs:
                 list_of_id_start_end = list(filter(lambda el: el != "", job.split(" ")))
                 if len(list_of_id_start_end) > 0:
                     final_data.append(list_of_id_start_end)
@@ -91,55 +94,9 @@ def get_all_user_jobs(user_email):
                                               "state": el[2],
                                               "start_time": el[3],
                                               "end_time": el[4]}, final_data))
-            # subprocess.call(["rm", user_name + "StartAndEndTimes.txt"])
-            return final_data
-        return []
-
-
-def check_all_user_jobs(user_email):
-    username = user_email.split('@')[0]
-    with open("all_jobs.txt", "w+") as fout:
-        out = exe_cmd_on_gpu_server("sacct", fout)
-        fout.seek(0)
-        output = fout.read()
-        all_jobs_list = output.split('\n')
-        user_jobs = []
-        # all_jobs_list[0] = "JobID, JobName, Partition, Account, AllocCPUS, State, ExitCode"
-        # all_jobs_list[1] = "-----, -------, ---------, -------, ---------, -----, --------"
-        # if len(all_jobs_list) > 1:
-        #     user_jobs.append(all_jobs_list[0])
-        #     user_jobs.append(all_jobs_list[1])
-        for job_row in all_jobs_list:
-            if username in job_row:
-                user_jobs.append(job_row)
-        return user_jobs
-
-
-def get_start_and_end_time(user_email):
-    user_name = user_email.split('@')[0]
-    with open(user_name + "StartAndEndTimes.txt", "w+") as fout:
-        cmd = "sacct -u " + user_name + " --format=JobID,Start,End"
-        out = exe_cmd_on_gpu_server(cmd, fout)
-        # out = subprocess.call(["sacct", "-u", user_name, "--format=JobID,Start,End"], stdout=fout)
-        fout.seek(0)
-        output = fout.read()
-        all_jobs_list = output.split('\n')
-        if len(all_jobs_list) > 1:
-            tmp = all_jobs_list[2:]
-            final_list_of_jobs = []
-            for job_row in tmp:
-                job_id_with_junk = job_row.split(" ")[0]
-                job_id = job_id_with_junk.split(".")
-                if len(job_id) == 1:
-                    final_list_of_jobs.append(job_row)
-            final_data = []
-            for job in final_list_of_jobs:
-                list_of_id_start_end = list(filter(lambda el: el != "", job.split(" ")))
-                if len(list_of_id_start_end) > 0:
-                    final_data.append(list_of_id_start_end)
-            final_data = list(map(lambda el: {"JobId": el[0],
-                                              "StartTime": el[1],
-                                              "EndTime": el[2]}, final_data))
+            # for job in final_data:
+            #     if username != job['job_name'].split("_JOBNUM_")[0]:
+            #         final_data.remove(job)
             # subprocess.call(["rm", user_name + "StartAndEndTimes.txt"])
             return final_data
         return []
@@ -151,10 +108,10 @@ def cancel_job(job_id):
 
 def get_user_jobs_by_state(user_email, state):
     user_name = user_email.split('@')[0]
-    curr_user_jobs_list = check_all_user_jobs(user_name)
+    curr_user_jobs_list = get_all_user_jobs(user_name)
     list_to_return = []
     for jb in curr_user_jobs_list:
-        if state in jb:
+        if state == jb['state']:
             list_to_return.append(jb)
     return list_to_return
 
@@ -237,6 +194,7 @@ def get_job_report(user_email, job_name_by_user):
         out = exe_cmd_on_gpu_server(cmd, fout)
         fout.seek(0)
         return fout.read()
+
 
 # from subprocess import Popen, PIPE
 # import subprocess

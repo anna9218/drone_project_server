@@ -1,25 +1,31 @@
 from unittest import TestCase
-
+import os, sys
 import tensorflow as tf
 from pandas import np
 
-from SlurmFunctions import Model
+
+sys.path.append(os.getcwd().split('\Tests')[0])
+from SlurmFunctions.models.Model import Model
 
 
 class TestModel(TestCase):
     def setUp(self):
-        model_type = 'modelLSTM'
         self.parameters = {'optimizer': "adam",
                            'metrics': ['accuracy'],
                            'iterations': 4,
                            'batch_size': 2,
                            'epochs': 3,
                            'neurons_in_layer': 64}
-        self.model = Model(model_type, self.parameters)
+        self.model = Model(self.parameters)
 
     def test_get_parameters(self):
-        self.assertEqual(self.model.get_parameters(), [["optimizer", 'str'], ["metrics", 'list'], ["iterations", 'int'],
-                                                       ["batch_size", 'int'], ["epochs", 'int'], ["neurons_in_layer", 'int']])
+        self.assertEqual(self.model.get_parameters(), [['optimizer', 'str', 'adam'],
+                                                       ['metrics', 'list', ['accuracy']],
+                                                       ['iterations', 'int', 4],
+                                                       ['batch_size', 'int', 2],
+                                                       ['epochs', 'int', 3],
+                                                       ['neurons_in_layer', 'int', 64]]
+)
 
     def test_build_model(self):
         self.assertEqual(self.model.get_model(), None)
@@ -41,6 +47,25 @@ class TestModel(TestCase):
         self.model.set_output_size(2)
         self.model.set_train_test_sets(X_train, y_train, X_test, y_test)
         report = self.model.train_and_predict_model()
-        print(report)
-        self.assertTrue(True)
 
+        self.assertEqual(report.keys(), ({'mean': '100.000%',
+                                          'std': '0.000%',
+                                          'min': '100.000%',
+                                          'max': '100.000%',
+                                          'results': "['100.000%', '100.000%', '100.000%', '100.000%']"}).keys())
+
+        # invalid input
+        try:
+            self.model.set_first_layer_for_tests(None)
+            self.model.set_output_size(2)
+            self.model.set_train_test_sets(X_train, y_train, X_test, y_test)
+            report = self.model.train_and_predict_model()
+
+            self.assertEqual(report.keys(), ({'mean': '100.000%',
+                                              'std': '0.000%',
+                                              'min': '100.000%',
+                                              'max': '100.000%',
+                                              'results': "['100.000%', '100.000%', '100.000%', '100.000%']"}).keys())
+            self.assertTrue(False)
+        except:
+            self.assertTrue(True)

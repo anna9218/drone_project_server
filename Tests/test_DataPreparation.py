@@ -1,18 +1,20 @@
-from unittest import TestCase
+from unittest import TestCase, mock
+import sys, os
+sys.path.append(os.getcwd().split('\Tests')[0])
 
-from SlurmFunctions import DataPreparation
-from SlurmFunctions.DataPreparation import DataPreparation
-
+from Domain.DataPreparation import DataPreparation
 from Tests.StubDBAccess import StubDBAccess
 
 
 class TestDataPreparation(TestCase):
     def setUp(self):
         self.dir_path = 'TestData/directories'
-        self.dataPreparation = DataPreparation()
+        self.dataPreparation = DataPreparation(self.dir_path, 'dataset.txt', 20, 360)
         self.dataPreparation.db = StubDBAccess()
         self.dataPreparation.DS_FOLDER = self.dir_path
 
+    # @mock.patch('DBCommunication.DBAccess.DBAccess.getInstance')
+    # @mock.patch('DBCommunication1.DBAccess.DBAccess.fetch_flights')
     def test_create_data_directories(self):
         dataset_path = self.dataPreparation.get_csv_with_prepared_data({}, 'weather', ['summer', 'winter', 'spring'])
         with open(dataset_path, 'r') as file:
@@ -63,12 +65,4 @@ class TestDataPreparation(TestCase):
                          [1, 2, 3, 4, 5, 3, 4, 5, 3, 4])
 
 
-    def test_split_to_train_test_from_csv(self):
-        dataset_path = './TestData/dataset.csv'
-        X_train, y_train, X_test, y_test = self.dataPreparation.split_to_train_test_from_csv(dataset_path)
-        self.assertEqual(X_train.shape, (4, 1, 360))
-        self.assertEqual(y_train.shape, (4,))
-        self.assertEqual(X_test.shape, (1, 1, 360))
-        self.assertEqual(y_test.shape, (1,))
-        print(y_test.shape)
 

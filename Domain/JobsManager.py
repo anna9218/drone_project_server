@@ -68,8 +68,8 @@ class JobsManager:
         """
 
         # check if job_name_by_user doesn't exists in the DB (Jobs document)
-        if DBAccess.getInstance().job_name_exist({'job_name_by_user': job_name_by_user, 'user_email': user_email}):
-            return {'msg': "Job name  " + job_name_by_user + " already exists.\nPlease enter different job name",
+        if self.db_access.job_name_exist({'job_name_by_user': job_name_by_user, 'user_email': user_email}):
+            return {'msg': "Job name " + job_name_by_user + " already exists.\nPlease enter different job name",
                     'data': False}
 
         logs_queries = [
@@ -114,12 +114,13 @@ class JobsManager:
     def cancel_job(self, user_email, slurm_job_id):
         try:
             SlurmManager.cancel_job(slurm_job_id)
-            canceled_jobs = SlurmManager.get_user_canceled_jobs(user_email)
-            canceled_jobs = list(filter(lambda job: canceled_jobs.split(" ")[0], canceled_jobs))
-            if slurm_job_id in canceled_jobs:
-                return {'msg': "Job " + slurm_job_id + "wasn't canceled successfully", 'data': True}
+            jobs_gpu = SlurmManager.get_all_user_jobs()
+            job_gpu_details: list = list(filter(lambda j: j['job_id'] == slurm_job_id, jobs_gpu))
+            job_gpu_details = job_gpu_details[0]
+            if 'CANCEL' in job_gpu_details['state']:
+                return {'msg': "Job " + str(slurm_job_id) + " was canceled successfully", 'data': True}
             else:
-                return {'msg': "Failure, the job " + slurm_job_id + "wasn't canceled.", 'data': False}
+                return {'msg': "Failure, the job " + str(slurm_job_id) + " wasn't canceled.", 'data': False}
         except:
             return {'msg': "Failure, error with the server", 'data': False}
 
@@ -143,10 +144,12 @@ class JobsManager:
         Returns list of models names that are in folder "Domain1/models/"
         :return: example for return result = ["modelLSTM", "modelGRU", "modelDENSE"]
         """
-        # TODO: the line bellow works on the university's server
-        models: list = os.listdir(self.MODELS_DIR_PATH_ON_LOCAL)
-        # TODO: the line bellow works on the our personal computers
-        # models: list = os.listdir('../SlurmFunctions/models')
+        try:
+            # TODO: the line bellow works on the university's server
+            models: list = os.listdir(self.MODELS_DIR_PATH_ON_LOCAL)
+        except:
+            # TODO: the line bellow works on the our personal computers
+            models: list = os.listdir('.' + self.MODELS_DIR_PATH_ON_LOCAL)
         models = list(map(lambda name: name.split(".")[0], models))
         models = list(filter(lambda name: name not in ['Model', '__init__', '__pycache__'], models))
         return {'msg': "Success", 'data': models}
@@ -172,10 +175,14 @@ class JobsManager:
          'report': {accuracy: 80, loss: 0.43}}
         """
         # 1. get all user's jobs from db
-        jobs_db = DBAccess.getInstance().fetch_jobs({"user_email": user_email})
+        jobs_db_cursor = self.db_access.fetch_jobs({"user_email": user_email})
+        jobs_db = []
+        for job in jobs_db_cursor:
+            jobs_db.append(job)
+
         jobs_to_display: list = []
         # check if updates are needed for user's jobs
-        if jobs_db.count() == 0:
+        if len(jobs_db) == 0:
             return {'msg': "You don't have any jobs.", 'data': None}
 
         # 2. get jobs details from GPU server (slurm)
@@ -198,7 +205,7 @@ class JobsManager:
                 if job_gpu_details['status'] == 'COMPLETED':
                     job_gpu_details['report'] = SlurmManager.get_job_report(user_email, job['job_name_by_user'])
                 # update job details in db
-                DBAccess.getInstance().update_job({'job_name_by_user': job['job_name_by_user'], 'user_email': user_email},
+                self.db_access.update_job({'job_name_by_user': job['job_name_by_user'], 'user_email': user_email},
                                                   job_gpu_details)
             else:
                 job_gpu_details = dict()
@@ -207,4 +214,10 @@ class JobsManager:
             jobs_to_display.append(job)
 
         return {'msg': "Success", 'data': jobs_to_display}
+
+    def set_db_of_tests(self, db):
+        """
+            For TESTS ONLY !!!
+        """
+        self.db_access = db
 

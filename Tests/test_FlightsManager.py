@@ -1,12 +1,15 @@
 import os
+import sys
 from unittest import TestCase
 from werkzeug.datastructures import FileStorage
-
+sys.path.append(os.getcwd().split('\Tests')[0])
 from Domain import FlightsManager
 import mock
 
 
+
 class TestUniformedFormat(TestCase):
+
     def setUp(self):
         self.data_with_GPS_point = (open("TestData/2021-01-08 17-17-25.log", 'rb')).readlines()
         self.data_without_GPS_point = []
@@ -52,7 +55,7 @@ class TestUploadFlight(TestCase):
         self.text_file.write("This is a text file an not a log file.")
         self.text_file.close()
 
-    @mock.patch('DBCommunication1.DBAccess.DBAccess')
+    @mock.patch('DBCommunication.DBAccess.DBAccess')
     def test_valid_input(self, mock_db):
         mock_db.return_value = True
         self.assertTrue(FlightsManager.upload_flight(self.log_file, {}))
@@ -62,12 +65,12 @@ class TestUploadFlight(TestCase):
     #     self.assertTrue(FlightsManager.upload_flight(self.log_file, {}))
     #     self.assertTrue(FlightsManager.upload_flight(self.log_file, {'location': 'summer'}))
 
-    @mock.patch('DBCommunication1.DBAccess.DBAccess')
+    @mock.patch('DBCommunication.DBAccess.DBAccess')
     def test_invalid_input(self, mock_db):
         mock_db.return_value = True
-        self.assertFalse(FlightsManager.upload_flight(None, {}))
-        self.assertFalse(FlightsManager.upload_flight(self.text_file, {}))
-        self.assertFalse(FlightsManager.upload_flight(self.log_file, None))
+        self.assertDictEqual(FlightsManager.upload_flight(None, {}), {'msg': 'Failure, error with the server', 'data': False})
+        self.assertDictEqual(FlightsManager.upload_flight(self.text_file, {}), {'msg': 'Failure, error with the server', 'data': False})
+        self.assertDictEqual(FlightsManager.upload_flight(self.log_file, None), {'msg': 'Failure, error with the server', 'data': False})
 
     def tearDown(self):
         if os.path.exists(self.text_file_name):

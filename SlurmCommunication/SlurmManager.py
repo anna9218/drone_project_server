@@ -147,4 +147,4 @@ def copy_directory_to_gpu_server(path_to_dir):
 
 
 # Set up the Folder with needed files in the GPU server.
-copy_directory_to_gpu_server(os.getcwd() + "/" + directory_of_slurm_functions_on_gpu)
+# copy_directory_to_gpu_server(os.getcwd() + "/" + directory_of_slurm_functions_on_gpu)

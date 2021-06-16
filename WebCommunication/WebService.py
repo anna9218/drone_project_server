@@ -47,6 +47,7 @@ def fetch_model_parameters():
         return jsonify(msg=response['msg'], data=response['data'])
     return jsonify(msg=response['msg'], data=response['data'])
 
+
 @app.route('/fetch_flight_param_values', methods=['POST'])
 def fetch_flight_param_values():
     parameter: str = request.form['parameter']
@@ -55,6 +56,7 @@ def fetch_flight_param_values():
         return jsonify(msg='Parameter\'s values retrieved successfully', data=data)
     except:
         return jsonify(msg='Error with the server', data=[])
+
 
 @app.route('/run_new_job', methods=['POST'])
 def run_new_job():

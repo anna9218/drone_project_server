@@ -126,27 +126,25 @@ class DBAccess:
                            Exp: {'Job_id': 123, 'job_name_by_user': 'my job', ...}
         :return: all jobs that fulfilled the conditions for each parameter
         """
-        return self.db.Jobs.find(parameters)
+        jobs_cursor = self.db.Jobs.find(parameters)
+        jobs = []
+        for job in jobs_cursor:
+            jobs.append(job)
+        return jobs
 
     def update_job(self, job_identification_details: dict, data_to_update: dict):
         self.db.Jobs.update(job_identification_details, {'$set': data_to_update})
 
     def job_name_exist(self, parameters: dict):
-        cursor = self.fetch_jobs(parameters)
-        return cursor.count() >= 1
+        return len(self.fetch_jobs(parameters)) >= 1
 
     def close_conn(self):
         self.mongo_client.close()
 
     def drop_db(self):
-        print(self.mongo_client.list_database_names())
+        # print(self.mongo_client.list_database_names())
         self.mongo_client.drop_database(self.db_name)
-        print(self.mongo_client.list_database_names())
-        # self.db.dropDatabase()
-        # self.db.Flights.drop()
-        # self.db.Jobs.drop()
-
+        # print(self.mongo_client.list_database_names())
 
 if __name__ == '__main__':
-    # DBAccess.getInstance().drop_db()
     pass

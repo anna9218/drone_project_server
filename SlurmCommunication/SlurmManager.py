@@ -26,7 +26,6 @@ local_addr = user_name_on_university_servers + "@132.72.67.188"
 gpu_addr = user_name_on_university_servers + "@gpu.bgu.ac.il"
 
 
-
 directory_of_slurm_functions_on_gpu = 'SlurmFunctions'
 run_job_path_on_gpu = directory_of_slurm_functions_on_gpu + '/runJob.py'
 
@@ -133,13 +132,14 @@ def get_job_report(user_email, job_name_by_user):
     """
     user_name = user_email.split('@')[0]
     with open("reportToReturn.txt", "w+") as fout:
-        cmd = "cat SlurmFunctions/reports/" + user_name + "_" + job_name_by_user + "_report.txt"
+        cmd = "cat " + directory_of_slurm_functions_on_gpu + "/reports/" + user_name + "_" + job_name_by_user + "_report.txt"
         out = exe_cmd_on_gpu_server(cmd, fout)
         fout.seek(0)
         return fout.read()
 
 
-def copy_directory_to_gpu_server(path_to_dir):
+def copy_directory_to_gpu_server():
+    path_to_dir = os.getcwd() + "/" + directory_of_slurm_functions_on_gpu
     source_host = local_addr
     dest_host = gpu_addr
     exe_cmd_on_gpu_server("scp -rp " + source_host + ":" + path_to_dir + " "
@@ -147,4 +147,4 @@ def copy_directory_to_gpu_server(path_to_dir):
 
 
 # Set up the Folder with needed files in the GPU server.
-copy_directory_to_gpu_server(os.getcwd() + "/" + directory_of_slurm_functions_on_gpu)
+# copy_directory_to_gpu_server(os.getcwd() + "/" + directory_of_slurm_functions_on_gpu)

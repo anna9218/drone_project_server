@@ -4,9 +4,6 @@ import unittest
 
 from SlurmCommunication import SlurmManager
 
-"""
-    The tests on this file will run only on the university servers!!!! 
-"""
 
 def run_on_gpu_and_return_output(cmd):
     with open("unitTestOutput.txt", "w+") as fout:
@@ -100,6 +97,9 @@ class TestSlurmMethods(unittest.TestCase):
         self.assertTrue(shais_job_is_found)
         self.assertTrue(edens_job_is_found)
 
+        subprocess.call(["rm", "all_jobs.txt"])
+        subprocess.call(["rm", "runJob.txt"])
+
     def test_cancel_job(self):
         job_id = SlurmManager.run_job_on_gpu("annamiro@post.bgu.ac.il", 'testSlurm/./tst.py', ['10000000'])
         all_jobs = SlurmManager.get_all_user_jobs()
@@ -136,6 +136,7 @@ class TestSlurmMethods(unittest.TestCase):
             local_ls = fout.read()
             self.assertTrue("reportToReturn.txt" in local_ls)
             subprocess.call(["rm", "ls.txt"])
+            subprocess.call(["rm", "reportToReturn.txt"])
 
 
 if __name__ == '__main__':

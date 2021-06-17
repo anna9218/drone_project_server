@@ -23,11 +23,15 @@ class JobsManager:
     data_preparation = DataPreparation("../data", "dataset.csv", 20, NUMBER_OF_FEATURES)
     db_access = DBAccess.getInstance()
     model = None
-    EXEC_FILE_PATH = 'SlurmFunctions/./slurmExecutableFile.py'
-    MODELS_DIR_PATH_ON_GPU = "SlurmFunctions.models."
-    MODELS_DIR_PATH_ON_LOCAL = "./SlurmFunctions/models"
+    directory_of_slurm_functions_on_gpu = 'SlurmFunctions'
+    EXEC_FILE_PATH = directory_of_slurm_functions_on_gpu + '/./slurmExecutableFile.py'
+    MODELS_DIR_PATH_ON_GPU = directory_of_slurm_functions_on_gpu + ".models."
+    MODELS_DIR_PATH_ON_LOCAL = "./" +directory_of_slurm_functions_on_gpu+ "/models"
     user_name = "shao"
-    dest_dataset_path = "/home/"+user_name+"/SlurmFunctions/dataset.csv"
+    dest_dataset_path = "/home/"+user_name+"/"+directory_of_slurm_functions_on_gpu+"/dataset.csv"
+
+    def __init__(self):
+        SlurmManager.copy_directory_to_gpu_server()
 
     def get_model_parameters(self, model_type: str):
         try:
@@ -66,7 +70,9 @@ class JobsManager:
         :param target_values: list of optional values for the target variable
         :return:
         """
-
+        if None in [user_email, job_name_by_user, model_type, model_details, logs_queries, target_variable]:
+            return {'msg': "Error, Invalid input.",
+                    'data': False}
         # check if job_name_by_user doesn't exists in the DB (Jobs document)
         if self.db_access.job_name_exist({'job_name_by_user': job_name_by_user, 'user_email': user_email}):
             return {'msg': "Job name " + job_name_by_user + " already exists.\nPlease enter different job name",

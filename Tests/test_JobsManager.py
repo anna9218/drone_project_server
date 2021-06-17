@@ -48,20 +48,19 @@ class TestJobsManager(TestCase):
         mock_clear_data_folder.return_value = True
 
         self.assertDictEqual(self.manager.run_new_job(user_email2_fail, 'job_name_by_user', None, None, {}, None),
-                             {'msg': "Job name job_name_by_user already exists.\n"
-                                     "Please enter different job name",
-                             'data': False})
+                             {'msg': "Error, Invalid input.",
+                              'data': False})
 
         mock_run_job_on_gpu.return_value = -1
         self.assertDictEqual(self.manager.run_new_job(user_email1_succ, None, None, None, {}, None),
-                             {'msg': 'Error with Slurm server connection.\n'
-                                     'Couldn\'t submit job.',
+                             {'msg': "Error, Invalid input.",
                               'data': False})
 
         mock_run_job_on_gpu.return_value = 6587
-        self.assertDictEqual(self.manager.run_new_job(user_email1_succ, 'job_name_by_user', None, dict(), dict(), None),
+        self.assertDictEqual(self.manager.run_new_job(user_email1_succ, 'job_name_by_user', "", dict(), dict(), ""),
                             {'msg': 'Job job_name_by_user was submitted successfully',
                              'data': True})
+
 
     @mock.patch('SlurmCommunication.SlurmManager.cancel_job')
     @mock.patch('SlurmCommunication.SlurmManager.get_all_user_jobs')

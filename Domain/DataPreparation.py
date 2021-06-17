@@ -118,7 +118,7 @@ class DataPreparation:
                 os.makedirs(self.DS_FOLDER + "/" + val)
 
             for file in files_dicts:
-                if prediction_variable in file.keys() and file[prediction_variable] == val:
+                if prediction_variable in file.keys() and str(file[prediction_variable]) == val:
                     output_file = open(self.DS_FOLDER + "/" + val + "/" + file['file_name'].strip('log') + "txt", "w")
                     file_keys = list(filter(lambda key: key != '_id' and key != 'data', file.keys()))
                     details = reduce(lambda acc, curr_key: acc + curr_key + '=' + str(file[curr_key]) + ',',

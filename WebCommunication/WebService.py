@@ -13,6 +13,7 @@ from Domain.JobsManager import JobsManager
 app = Flask(__name__)
 CORS(app)
 
+jobs_manager = JobsManager()
 
 @app.route('/upload_flight', methods=['POST'])
 def upload_flight():
@@ -27,13 +28,13 @@ def upload_flight():
 
 @app.route('/get_models_types', methods=['GET'])
 def get_models_types():
-    response = JobsManager().get_models_types()
+    response = jobs_manager.get_models_types()
     return jsonify(msg=response['msg'], data=response['data'])
 
 
 @app.route('/fetch_parameters', methods=['GET'])
 def fetch_parameters():
-    response = JobsManager().get_all_parameters()
+    response = jobs_manager.get_all_parameters()
     if response:
         return jsonify(msg=response['msg'], data=response['data'])
     return jsonify(msg=response['msg'], data=response['data'])
@@ -42,7 +43,7 @@ def fetch_parameters():
 @app.route('/fetch_model_parameters', methods=['POST'])
 def fetch_model_parameters():
     model_type = request.form['model_type']
-    response = JobsManager().get_model_parameters(model_type)
+    response = jobs_manager.get_model_parameters(model_type)
     if response:
         return jsonify(msg=response['msg'], data=response['data'])
     return jsonify(msg=response['msg'], data=response['data'])
@@ -52,7 +53,7 @@ def fetch_model_parameters():
 def fetch_flight_param_values():
     parameter: str = request.form['parameter']
     try:
-        data = JobsManager().fetch_flight_param_values(parameter)
+        data = jobs_manager.fetch_flight_param_values(parameter)
         return jsonify(msg='Parameter\'s values retrieved successfully', data=data)
     except:
         return jsonify(msg='Error with the server', data=[])
@@ -66,7 +67,7 @@ def run_new_job():
     model_details: dict = json.loads(request.form['model_details'])
     logs_queries: dict = json.loads(request.form['logs_queries'])
     target_variable = request.form['target_variable']
-    response = JobsManager().run_new_job(user_email, job_name_by_user, model_type, model_details, logs_queries,
+    response = jobs_manager.run_new_job(user_email, job_name_by_user, model_type, model_details, logs_queries,
                                          target_variable)
     return response
 
@@ -75,7 +76,7 @@ def run_new_job():
 def cancel_job():
     user_email: str = request.form['user_email']
     slurm_job_id: str = request.form['job_id']
-    response = JobsManager().cancel_job(user_email, slurm_job_id)
+    response = jobs_manager.cancel_job(user_email, slurm_job_id)
     if response:
         return jsonify(msg='Job ' + str(slurm_job_id) + ' was canceled successfully!', data=True)
     return jsonify(msg='Error! Job ' + str(slurm_job_id) + ' was not canceled!', data=False)
@@ -85,7 +86,7 @@ def cancel_job():
 def fetch_researcher_jobs():
     user_email: str = request.form['user_email']
     try:
-        response = JobsManager().fetch_researcher_jobs(user_email)
+        response = jobs_manager.fetch_researcher_jobs(user_email)
         return jsonify(msg=response['msg'], data=response['data'])
     except:
         return jsonify(msg='Error with the server', data=[])

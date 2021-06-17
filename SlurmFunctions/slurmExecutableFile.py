@@ -22,6 +22,8 @@ def create_and_run_model(user_email: str, job_name_by_user: str, model_type: str
     with open('./SlurmFunctions/reports/' + user_name + '_' + job_name_by_user + '_report.txt', 'w') as report_file:
         try:
             sys.stdout = report_file
+
+            #  ----------------------------  printing to report file  ----------------------------
             x_train, y_train, x_test, y_test = SplitData(num_of_features).split_to_train_test_from_csv(dataset_path)
             os.remove(dataset_path)
 
@@ -39,6 +41,7 @@ def create_and_run_model(user_email: str, job_name_by_user: str, model_type: str
             report: dict = new_model.train_and_predict_model()
             print('CNN model results:')
             [print('     ' + key + ': ' + report[key]) for key in report.keys()]
+            #  -----------------------------------------------------------------------------------
 
             sys.stdout = original_stdout
             report_file.close()

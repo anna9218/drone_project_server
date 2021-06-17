@@ -10,7 +10,7 @@ class TestDBAccess(TestCase):
         self.db.db = self.db.mongo_client.test_db
         self.db.db_name = "test_db"
         self.db.insert_flight({'file_name': 'file1', 'data': 1234})
-        self.db.insert_flight({'file_name': 'file2', 'data': 4567})
+        self.db.insert_flight({'file_name': 'file2', 'data': 4567, 'age': 34})
 
         self.db.insert_job({'job_name': "job1", 'user_email': 'bla1@gmail.com'})
         self.db.insert_job({'job_name': "job2", 'user_email': 'bla2@gmail.com'})
@@ -27,7 +27,7 @@ class TestDBAccess(TestCase):
         flights[0].pop('_id', None)
         flights[1].pop('_id', None)
         self.assertDictEqual({'file_name': 'file1', 'data': 1234}, flights[0])
-        self.assertDictEqual({'file_name': 'file2', 'data': 4567}, flights[1])
+        self.assertDictEqual({'file_name': 'file2', 'data': 4567, 'age': 34}, flights[1])
 
     def test_fetch_flights(self):
         flights = self.db.fetch_flights({})
@@ -35,7 +35,7 @@ class TestDBAccess(TestCase):
         flights[0].pop('_id', None)
         flights[1].pop('_id', None)
         self.assertDictEqual({'file_name': 'file1', 'data': 1234}, flights[0])
-        self.assertDictEqual({'file_name': 'file2', 'data': 4567}, flights[1])
+        self.assertDictEqual({'file_name': 'file2', 'data': 4567, 'age': 34}, flights[1])
 
     def test_insert_job(self):
         jobs = self.db.fetch_jobs({})

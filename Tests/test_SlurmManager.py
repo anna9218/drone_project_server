@@ -1,3 +1,4 @@
+import os
 import subprocess
 import time
 import unittest
@@ -137,6 +138,11 @@ class TestSlurmMethods(unittest.TestCase):
             self.assertTrue("reportToReturn.txt" in local_ls)
             subprocess.call(["rm", "ls.txt"])
             subprocess.call(["rm", "reportToReturn.txt"])
+
+    # def tearDown(self) -> None:
+    #     for file in ["fileToMove.txt", "ls.txt",]
+    #         if os.path.exists(file):
+    #             os.remove(file)
 
 
 if __name__ == '__main__':

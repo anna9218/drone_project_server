@@ -38,10 +38,6 @@ class TestUniformedFormat(TestCase):
 class TestUploadFlight(TestCase):
 
     def setUp(self):
-        # # self.db_access_mock: DBAccess = DBAccess.get_instance()
-        # self.db_access_mock = DBAccess.get_instance()
-        # self.__payment_sys.set_real(self.__real_payment_mock)
-
         self.log_file_loc = "TestData/2021-01-07 15-59-47.log"
         self.log_file_copy = open(self.log_file_loc, 'rb')
         self.log_file_storage = FileStorage(self.log_file_copy)
@@ -55,15 +51,24 @@ class TestUploadFlight(TestCase):
         self.text_file.write("This is a text file an not a log file.")
         self.text_file.close()
 
+    @mock.patch('Domain.FlightsManager.convert_flight_data_to_uniformed_format')
     @mock.patch('DBCommunication.DBAccess.DBAccess')
-    def test_valid_input(self, mock_db):
+    def test_valid_input(self, mock_db, mock_convert_flight_data_to_uniformed_format):
         mock_db.return_value = True
-        self.assertTrue(FlightsManager.upload_flight(self.log_file, {}))
-        self.assertTrue(FlightsManager.upload_flight(self.log_file, {'location': 'summer'}))
+        # invalid inut
+        self.assertDictEqual(FlightsManager.upload_flight(None, {}),
+                             {'msg': "Failure, error with the server", 'data': False})
+        self.assertDictEqual(FlightsManager.upload_flight(self.log_file, "string is invalid input"),
+                             {'msg': "Failure, error with the server", 'data': False})
 
-    # def test_valid_input(self):
-    #     self.assertTrue(FlightsManager.upload_flight(self.log_file, {}))
-    #     self.assertTrue(FlightsManager.upload_flight(self.log_file, {'location': 'summer'}))
+        # valid input
+        mock_convert_flight_data_to_uniformed_format.return_value = ""
+        self.assertDictEqual(FlightsManager.upload_flight(self.log_file, {}),
+                             {'msg': "Failure, error with the server", 'data': False})
+        mock_convert_flight_data_to_uniformed_format.return_value = "12 34 554\n 42 54 65"
+        self.assertDictEqual(FlightsManager.upload_flight(self.log_file, {'location': 'summer'}),
+                             {'msg': "File uploaded successfully.", 'data': True})
+
 
     @mock.patch('DBCommunication.DBAccess.DBAccess')
     def test_invalid_input(self, mock_db):

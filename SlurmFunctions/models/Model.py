@@ -1,5 +1,5 @@
 import sys
-import numpy as np
+from pandas import np
 import tensorflow as tf
 
 """
@@ -58,6 +58,7 @@ class Model:
 
     def set_output_size(self, output_size):
         self.output_size = output_size
+
 
     def build_model(self):
         self.model = tf.keras.models.Sequential([

@@ -89,7 +89,7 @@ class JobsManager:
         SlurmManager.move_file_to_gpu(dataset_path, self.dest_dataset_path)
         self.data_preparation.clear_data_folder()
 
-        param_list = ['createAndRunModel', job_name_by_user, model_type, self.dest_dataset_path, user_email,
+        param_list = ['createAndRunModel', "\"" + job_name_by_user + "\"", model_type, self.dest_dataset_path, user_email,
                       str(output_size), str(self.NUMBER_OF_FEATURES), self.object_to_str(model_details)]
 
         job_id = SlurmManager.run_job_on_gpu(user_email, self.EXEC_FILE_PATH, param_list)

@@ -113,6 +113,7 @@ class DataPreparation:
 
         # 2. create directories: create a folder per predication value
         for val in prediction_values:
+            val = str(val)
             if not os.path.exists(self.DS_FOLDER + "/" + val):
                 os.makedirs(self.DS_FOLDER + "/" + val)
 
